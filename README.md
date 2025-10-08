@@ -28,7 +28,11 @@ or
 $ python3 main.py
 ```
 
+You might encounter a `Permission denied` error launching this application. In such a case, launch it with the following command instead:
 
+```bash
+sudo venv/bin/python3 main.py
+```
 
 ## Hosting
 
