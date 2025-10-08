@@ -15,26 +15,37 @@ It is used to import css and js files.
 {% endblock HEAD %}
 </head>
 
+{% block FORMS %}
+{% endblock FORMS %}
+
 <!--
 BODY block.
 This block contains all actual content of the template.
 -->
-<body>
-    <div class="navbar">
-        {% block NAVBAR_CONTENT %}
-        {% endblock NAVBAR_CONTENT %}
-        x
-    </div>
-    <div class="content">
-        {% block BODY_CONTENT %}
-        {% endblock BODY_CONTENT %}
+<body style="background-image: url({{ url_for('serve_media', path='images/bg_img.jpg') }})">
+        <div class="navbar">
+            {% block NAVBAR_CONTENT %}
+            {% endblock NAVBAR_CONTENT %}
+            <button class="navbarButton" onclick="window.location.href='about'">
+                About
+            </button>
+            <button class="navbarButton" onclick="window.location.href='projects'">
+                Projects
+            </button>
+            <button class="navbarButton" onclick="window.location.href='feedback'">
+                Feedback
+            </button>
+        </div>
+        <div class="content">
+            {% block BODY_CONTENT %}
+            {% endblock BODY_CONTENT %}
 
-    </div>
-    <div class="sidebar">
-        {% block SIDEBAR_CONTENT %}
-        {% endblock SIDEBAR_CONTENT %}
+        </div>
+        <div class="sidebar">
+            {% block SIDEBAR_CONTENT %}
+            {% endblock SIDEBAR_CONTENT %}
+        </div>
 
-    </div>
 </body>
 
 <!--

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+
+
+{% block HEAD %}
+<link rel="{{ url_for( 'static', filename='css/about.css' ) }}">
+<script src="{{ url_for( 'static', filename='js/about.js' ) }}"></script>
+{% endblock HEAD %}
+
+
+
+{% block BODY_CONTENT %}
+<!--
+A container for 3 main statements that tell the user
+about myself. A past oriented statement (bibliography),
+a present oriented statement, and a future oriented
+statement (goals/aspirations).
+-->
+<div class="bibliographyContainer">
+    <h3> Bibliography: </h3>
+    <p>
+        {{ bibliography }}
+    </p>
+</div>
+
+<div class="descriptionContainer">
+    <h3> Description: </h3>
+    <p>
+        {{ description }}
+    </p>
+</div>
+
+<div class="aspirationsContainer">
+    <h3> Aspirations </h3>
+    <p>
+        {{ goals }}
+    </p>
+</div>
+{% endblock BODY_CONTENT %}
+
+
+
+{% block SIDEBAR_CONTENT %}
+<!-- 
+CV section of this page.
+Lists skills, name, education, etc.
+-->
+<img src="{{ url_for( 'serve_media', path='images/pfp.png' ) }}">
+<b class="nameContainer">{{ name }}</b>
+<p class="occupationContainer">{{ occupation }}</p>
+<i class="educationContainer">{{ education }} </i>
+<ul class="skillsContainer" id="skillsContainer">
+</ul>
+<button onclick="window.location.href='/about/raw'" style="margin-top:auto; margin-bottom:20px;"> raw </button>
+{% endblock SIDEBAR_CONTENT %}
+
+
+
+{% block FOOTER %}
+<script type="text/javascript">
+    populateSkills({{ skills|tojson }})
+</script>
+{% endblock FOOTER %}

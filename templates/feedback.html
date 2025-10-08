@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block HEAD %}
+<link rel="stylesheet" href="{{ url_for( 'static', filename='css/feedback.css' ) }}">
+<script type="text/javascript" src="{{ url_for('static', filename="js/feedback.js") }}"> </script>
+{% endblock HEAD %}
+
+{% block FORMS %}
+<div class="submitFeedbackFormContainer" id="submitFeedbackFormContainer" onclick="this.style.display='none';">
+    <form method="POST" action="feedback/submit" onclick="event.stopPropagation();">
+        <label> Author: </label>
+        <input name="Author" required> 
+        <label> Feedback: </label>
+        <input name="Feedback" required>
+        <button type="submit" > submit </button> 
+    </form>
+</div>
+{% endblock FORMS %}
+
+{% block BODY_CONTENT %}
+<div class="feedbacksContainer" id="feedbacksContainer">
+</div>
+
+
+<div class="buttonsBar">
+    <button class="addProjectButton" id="addProjectButton" onclick="showSubmitFeedbackForm()">
+        +
+    </button>
+</div>
+{% endblock BODY_CONTENT %}
+
+{% block SIDEBAR_CONTENT %}
+<button onclick="window.location.href='/feedback/raw'" style="margin-top:auto; margin-bottom:20px;"> raw </button>
+{% endblock SIDEBAR_CONTENT %}
+
+{% block FOOTER %}
+<script type="text/javascript">
+    populateFeedbacks({{ all_feedbacks|tojson }})
+</script>
+{% endblock FOOTER %}

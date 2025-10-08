@@ -1,4 +1,5 @@
 from flask import Flask
+import os
 from lib.router import Router
 
 ###
@@ -7,6 +8,8 @@ from lib.router import Router
 
 ### https://flask.palletsprojects.com/en/stable/api/
 app = Flask("me", static_folder="static")
+app.config['MEDIA_FOLDER'] = os.path.join(os.getcwd(), "media")
+
 Router(app)
 
 if __name__ == "__main__":

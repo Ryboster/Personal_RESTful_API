@@ -1,0 +1,8 @@
+
+.bibliographyContainer,
+.descriptionContainer,
+.aspirationsContainer
+{
+    display: flex;
+    flex-direction: column;
+}
