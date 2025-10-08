@@ -1,0 +1,39 @@
+/* 
+This is the base style for elements found on all endpoints.
+*/
+
+html
+{
+    width: 100vw;
+    height: 100vh;
+}
+
+body
+{
+    background-color: rgb(58, 58, 58);
+    height: 100%;
+    width: 100%;
+    display:flex;
+    flex-direction: row;
+}
+
+.navbar,
+.sidebar {
+    width: 15%;
+    justify-content: left;
+}
+
+.content {
+    width: 70%;
+    justify-content: center;
+}
+
+.navbar,
+.content,
+.sidebar {
+    height: 100%;
+    background-color: rgb(58, 58, 58);
+    display: flex;
+    flex-direction: column;
+}
+

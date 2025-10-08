@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!-- 
+This is the base template (HTML file) for all other templates.
+It is inherited and expanded upon by other templates. 
+It utilizes Jinja blocks to meet that end.
+-->
+
+<!-- 
+HEAD block.
+It is used to import css and js files. 
+-->
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+{% block HEAD %}
+{% endblock HEAD %}
+</head>
+
+<!--
+BODY block.
+This block contains all actual content of the template.
+-->
+<body>
+    <div class="navbar">
+        {% block NAVBAR_CONTENT %}
+        {% endblock NAVBAR_CONTENT %}
+        x
+    </div>
+    <div class="content">
+        {% block BODY_CONTENT %}
+        {% endblock BODY_CONTENT %}
+
+    </div>
+    <div class="sidebar">
+        {% block SIDEBAR_CONTENT %}
+        {% endblock SIDEBAR_CONTENT %}
+
+    </div>
+</body>
+
+<!--
+FOOTER block.
+This block i'm not sure what it's for.
+-->
+<footer>
+{% block FOOTER %}
+{% endblock FOOTER %}
+</footer>
+
+<!--
+Made by Gracjan Blazejowski, 
+October 2025
+-->
