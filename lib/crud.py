@@ -3,9 +3,15 @@ import os
 from lib.databases.CreationQueries import Creator
 
 
+###
+### This class is responsible for all operations done on databases.
+### For convenience's sake it is CRUD+ as not only does it define
+### methods used for reading, creating, updating, and deleting entries,
+### but also methods for targetted retrieval and transformation.
+### It is used exclusively by the Router class.
+### 
 
-class CRUD(Creator):
-    
+class CRUD(Creator):    
     def __init__(self):
         self.DATABASE_DIR = "databases"
         self.PROJECTS_DB = "projects.sqlite3"

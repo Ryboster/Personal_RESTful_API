@@ -15,12 +15,19 @@ It is used to import css and js files.
 {% endblock HEAD %}
 </head>
 
+<!--
+This block is for defining forms used in different templates.
+My preferred format for forms requires that forms must be
+defined in parallel with body, not inside it.
+-->
 {% block FORMS %}
 {% endblock FORMS %}
 
 <!--
 BODY block.
-This block contains all actual content of the template.
+This block contains content and tools for interaction
+with the website (interface). It sets the layout for
+every form, which is 3 columns.
 -->
 <body style="background-image: url({{ url_for('serve_media', path='images/bg_img.jpg') }})">
         <div class="navbar">

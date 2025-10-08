@@ -1,19 +1,21 @@
 {% extends 'base.html' %}
 
-
+<!--
+This endpoint contains information about a gentleman named Gracjan.
+It gives the user a rundown of Gracjan's life, education, occupation,
+and relevant skills.
+-->
 
 {% block HEAD %}
 <link rel="{{ url_for( 'static', filename='css/about.css' ) }}">
 <script src="{{ url_for( 'static', filename='js/about.js' ) }}"></script>
 {% endblock HEAD %}
 
-
-
 {% block BODY_CONTENT %}
 <!--
 A container for 3 main statements that tell the user
-about myself. A past oriented statement (bibliography),
-a present oriented statement, and a future oriented
+about myself. A past-oriented statement (bibliography),
+a present-oriented statement, and a future-oriented
 statement (goals/aspirations).
 -->
 <div class="bibliographyContainer">
@@ -22,14 +24,12 @@ statement (goals/aspirations).
         {{ bibliography }}
     </p>
 </div>
-
 <div class="descriptionContainer">
     <h3> Description: </h3>
     <p>
         {{ description }}
     </p>
 </div>
-
 <div class="aspirationsContainer">
     <h3> Aspirations </h3>
     <p>
@@ -37,8 +37,6 @@ statement (goals/aspirations).
     </p>
 </div>
 {% endblock BODY_CONTENT %}
-
-
 
 {% block SIDEBAR_CONTENT %}
 <!-- 
@@ -53,8 +51,6 @@ Lists skills, name, education, etc.
 </ul>
 <button onclick="window.location.href='/about/raw'" style="margin-top:auto; margin-bottom:20px;"> raw </button>
 {% endblock SIDEBAR_CONTENT %}
-
-
 
 {% block FOOTER %}
 <script type="text/javascript">

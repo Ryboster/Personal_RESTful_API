@@ -1,3 +1,6 @@
+// Receive all feedback entries from the backend,
+// and while containerizing each item, populate the
+// feedbacks container
 function populateFeedbacks(feedbacks)
 {
     for (const [key, val] of Object.entries(feedbacks))
@@ -11,7 +14,7 @@ function populateFeedbacks(feedbacks)
         ID.textContent = key;
         author.textContent = val["author"];
         feedback.textContent = val["feedback"];
-
+        
         topBar.appendChild(author);
         topBar.appendChild(ID);
         container.appendChild(topBar);

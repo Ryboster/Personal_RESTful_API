@@ -1,3 +1,5 @@
+// Receive the list of skills from the backend and while 
+// containerizing each skill, populate the "skills" list in the template. 
 function populateSkills(skills)
 {
     console.log(skills)

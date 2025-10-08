@@ -6,6 +6,7 @@ function showAddProjectForm()
     formContainer.style.display = "flex";
 }
 
+// Display and populate the Edit form with the selected entry.
 function showEditProjectForm()
 {
     var formContainer = document.getElementById("editProjectFormContainer");
@@ -15,6 +16,7 @@ function showEditProjectForm()
     document.getElementById("editProjectFormDescriptionInput").value = selected.getAttribute("projectDescription");
 }
 
+// Display and populate the Delete form with the selected entry.
 function showRemoveProjectForm()
 {
     var formContainer = document.getElementById("removeProjectFormContainer");
@@ -28,6 +30,8 @@ function hideForm(form)
     form.style.display = "none";
 }
 
+// Saves an entry into the 'selected' variable as well as
+// alters its background color to signify selection.
 function select(element) {
     if (selected === element) {
         deselect(element);
@@ -48,6 +52,8 @@ function deselect(element) {
     document.getElementById("removeProjectButton").disabled = true;
 }
 
+// Receive all project entries from backend, and while containerizing,
+// populate the projects container/list.
 function populateProjects(projects)
 {
     const projectsContainer = document.getElementById("projectsContainer");

@@ -5,29 +5,30 @@ from lib.crud import CRUD
 
 ###
 ### This script is responsible for fetching and serving static files
-### based on user request.
+### based on user request. It is the core of this application.
+### Each endpoint has a /raw "subendpoint" which can be used to fetch
+### the endpoint's content in JSON format.
 ###
 
 STATIC_FOLDER = "static"
 TEMPLATES_FOLDER = "html"
 
-
 class Router(CRUD):
     def __init__(self, app):
-        super().__init__()
-        self.app = app
-        self.register_routes()
-        self.jsonificator = Jsonificator()
+        super().__init__()                  # Initialize CRUD.
+        self.app = app                      # Take ownership of the app object.
+        self.register_routes()              # Assign responses to the app object.
+        self.jsonificator = Jsonificator()  # Instantiate helper class.
     
     def register_routes(self):
+        ### /home Endpoint
+        ###
         @self.app.route("/")
         def index():
             return render_template("base.html")
     
-        @self.app.route("/serve_media/<path:path>")
-        def serve_media(path):
-            return send_from_directory(self.app.config["MEDIA_FOLDER"], path)
-    
+        ### /about Endpoint
+        ###
         @self.app.route("/about/raw")
         def about_raw():
             return serve_media("json/About.json")
@@ -44,7 +45,9 @@ class Router(CRUD):
                                    description=about["Description"],
                                    goals=about["Aspirations"],
                                    skills=about["Skills"])
-        
+            
+        ### /projects Endpoint
+        ###
         @self.app.route("/projects/raw")
         def projects_raw():
             all_projects = self.get_all_projects()
@@ -83,6 +86,8 @@ class Router(CRUD):
             self.delete(self.PROJECTS_DB, "Projects", "Project_ID", project_ID)
             return redirect("/projects")
         
+        ### /feedback Endpoint
+        ###
         @self.app.route("/feedback")
         def feedback():
             feedbacks = self.get_all_feedbacks()
@@ -94,7 +99,6 @@ class Router(CRUD):
             json_data = self.jsonificator.convert_dict_to_json(feedbacks)
             return Response(json_data, mimetype="application/json")
             
-        
         @self.app.route("/feedback/submit", methods=["POST"])
         def submit_feedback():
             self.create(self.FEEDBACK_DB, 
@@ -104,3 +108,8 @@ class Router(CRUD):
                         columns=("Author",
                                  "Feedback"))
             return redirect("/feedback")
+        
+        ### "Helper" endpoint used for fetching media resources by other endpoints
+        @self.app.route("/serve_media/<path:path>")
+        def serve_media(path):
+            return send_from_directory(self.app.config["MEDIA_FOLDER"], path)

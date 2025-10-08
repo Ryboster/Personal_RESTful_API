@@ -1,6 +1,10 @@
 import json
 
-
+###
+### This class handles all operations done on JSON files.
+### It helps in moving this responsibility away from the
+### Router, allowing for tidier code.
+###
 class Jsonificator:
     def __init__(self):
         pass

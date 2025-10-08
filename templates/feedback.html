@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+<!--
+This template displays feedback submitted by people,
+and defines the form used in submitting that feedback.
+-->
+
 {% block HEAD %}
 <link rel="stylesheet" href="{{ url_for( 'static', filename='css/feedback.css' ) }}">
 <script type="text/javascript" src="{{ url_for('static', filename="js/feedback.js") }}"> </script>
@@ -20,7 +25,6 @@
 {% block BODY_CONTENT %}
 <div class="feedbacksContainer" id="feedbacksContainer">
 </div>
-
 
 <div class="buttonsBar">
     <button class="addProjectButton" id="addProjectButton" onclick="showSubmitFeedbackForm()">

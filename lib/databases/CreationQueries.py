@@ -1,5 +1,9 @@
-
-
+###
+### This class stores the queries used to create the databases
+### used by this application.
+### In future, this will be moved off to a JSON file as
+### class is kind of an overkill.
+###
 class Creator:
     def __init__(self):
         self.create_projects_query = """
