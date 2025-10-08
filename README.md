@@ -12,8 +12,23 @@ To use this app you're going to need to install required packages. Open a termin
 $ python3 -m venv venv # Create a new virtual environment
 $ source venv/bin/activate # Activate (or enter) the virtual environment
 $ pip install -r requirements.txt # Download required packages from a file
-$ python3 main.py # Launch the application
 ```
+
+This application takes two optional positional arguments; **PORT** and **HOST**. If not provided, it will default to hosting the server on `0.0.0.0:443`.
+
+To launch the application, enter the following command:
+
+```bash
+$ python3 main.py 8000 "1.1.1.1" # Launch the application
+```
+
+or
+
+```bash
+$ python3 main.py
+```
+
+
 
 ## Hosting
 
