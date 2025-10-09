@@ -86,8 +86,8 @@ to `POST` a new resource, no ID is required. Your request needs to include a val
 
 ```json
 {
-    ProjectName: "Rice Cooker",
-    ProjectDescription: "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
+    "ProjectName": "Rice Cooker",
+    "ProjectDescription": "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
 }
 ```
 
@@ -99,8 +99,8 @@ to `PUT`, a valid `project_ID` must be supplied in the URL, e.g. `/api/projects/
 
 ```json
 {
-    ProjectName: "Rice Cooker",
-    ProjectDescription: "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
+    "ProjectName": "Rice Cooker",
+    "ProjectDescription": "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
 }
 ```
 
@@ -122,8 +122,8 @@ to `POST` a new feedback resource, send a `POST` request to `/api/feedback`. You
 
 ```json
 {
-    Author: "John Smith",
-    Feedback: "Great site! Not enough cat pictures though ..."
+    "Author": "John Smith",
+    "Feedback": "Great site! Not enough cat pictures though ..."
 }
 ```
 
