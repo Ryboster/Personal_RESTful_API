@@ -2,3 +2,5 @@
 /media/json/*.json
 /venv
 venv
+private.key
+fullchain.crt
