@@ -98,10 +98,8 @@ to `PUT`, a valid `project_ID` must be supplied in the URL, e.g. `/api/projects/
 ##### Structure:
 
 ```json
-{
-    ProjectName: "Rice Cooker",
-    ProjectDescription: "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
-}
+ProjectName: "Rice Cooker",
+ProjectDescription: "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
 ```
 
 #### `DELETE`
