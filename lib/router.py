@@ -1,4 +1,4 @@
-from flask import render_template, send_from_directory, request, redirect, Response
+from flask import render_template, send_from_directory, request, redirect, Response, url_for
 import os
 from lib.jsonificator import Jsonificator
 from lib.crud import CRUD
@@ -31,11 +31,16 @@ class Router(CRUD):
         ### API
         ##
         @self.app.route("/api/about", methods=["GET"])
-        def api_about():
+        def API_about():
             try:
-                return serve_media("json/About.json")
+                about_dict = self.jsonificator.read_from_json(os.path.join(self.app.config["MEDIA_FOLDER"], "json", "About.json"))
+                about_dict["actions"] = [
+                    {"href": url_for("API_about", _external=True),
+                     "method": "GET"}
+                ]
+                return Response(self.jsonificator.convert_dict_to_json(about_dict), status=200, mimetype="application/json")
             except Exception:
-                return Response(self.jsonificator.jsonify_response("resource not found"), status=404, mimetype="application/json")
+                return Response(self.jsonificator.jsonify_error("resource not found"), status=404, mimetype="application/json")
             
         ### /about Endpoint
         ### Headed
@@ -55,15 +60,41 @@ class Router(CRUD):
             
         ### /projects Endpoint
         ### API
-        ##
+        ## {"rel": "self", "href": url_for("API_get_project", project_ID=project["Project_ID"], _external=True), "method": "GET"},
         @self.app.route("/api/projects", methods=["GET"])
-        def API_get_projects():
-            try:
+        @self.app.route("/api/projects/<int:project_ID>", methods=["GET"])
+        def API_get_projects(project_ID=None):
+            if project_ID:
                 all_projects = self.get_all_projects()
-                json_data = self.jsonificator.convert_dict_to_json(all_projects)
-                return Response(json_data, status=200, mimetype="application/json")
-            except Exception as e:
-                return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                requested_project = {}
+                for ID in all_projects.keys():
+                    if project_ID == ID:
+                        requested_project[project_ID] = all_projects[project_ID]
+                if len(requested_project.keys()) == 0:
+                    return Response(self.jsonificator.jsonify_error("resource not found"), status=404, mimetype="application/json")
+                else:
+                    requested_project["actions"] = [
+                        {"href": url_for("API_get_projects", project_ID=project_ID, _external=True),
+                         "method": "GET"},
+                        {"href": url_for("API_edit_project", project_ID=project_ID, _external=True),
+                         "method": "PUT"},
+                        {"href": url_for("API_delete_project", project_ID=project_ID, _external=True),
+                         "method": "DELETE"}]
+                    return Response(self.jsonificator.convert_dict_to_json(requested_project), status=200, mimetype="application/json")
+            else:
+                try:
+                    all_projects = self.get_all_projects()
+                    all_projects["actions"] = [
+                        {"href": url_for("API_get_projects", project_ID=None, _external=True),
+                         "method": "GET"},
+                        {"href": url_for("API_add_project", _external=True),
+                         "method": "POST"}
+                    ]
+                    json_data = self.jsonificator.convert_dict_to_json(all_projects)
+                    
+                    return Response(json_data, status=200, mimetype="application/json")
+                except Exception as e:
+                    return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
         
         @self.app.route("/api/projects", methods=["POST"])
         def API_add_project():
@@ -140,16 +171,20 @@ class Router(CRUD):
         ### /feedback Endpoint
         ### API
         ##
-        @self.app.route("api/feedback", methods=["GET"])
+        @self.app.route("/api/feedback", methods=["GET"])
         def API_feedback():
             try: 
                 feedbacks = self.get_all_feedbacks()
-                json_data = self.jsonificator.convert_dict_to_json(feedbacks)
-                return Response(json_data, mimetype="application/json")
+                feedbacks["actions"] = [
+                {"href": url_for("API_feedback", _external=True),
+                 "method": "GET"},
+                {"href": url_for("API_feedback", _external=True),
+                 "method": "POST"}]
+                return Response(self.jsonificator.convert_dict_to_json(feedbacks), mimetype="application/json")
             except Exception as e:
                 return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
         
-        @self.app.route("api/feedback", methods=["POST"])
+        @self.app.route("/api/feedback", methods=["POST"])
         def API_add_feedback():
             data = request.get_json()
             if not data or not "Author" in data or not "Feedback" in data:

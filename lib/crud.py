@@ -100,6 +100,7 @@ class CRUD(Creator):
         all_projects = {}
         for record in self.read(self.PROJECTS_DB, "Projects"):    
             all_projects[record[0]] = {}
+            all_projects[record[0]]["project_ID"] = record[0]
             all_projects[record[0]]['project_name'] = record[1]
             all_projects[record[0]]['project_description'] = record[2]
         return all_projects
@@ -108,6 +109,7 @@ class CRUD(Creator):
         all_feedbacks = {}
         for record in self.read(self.FEEDBACK_DB, "Feedbacks"):
             all_feedbacks[record[0]] = {}
+            all_feedbacks[record[0]]["feedback_ID"] = record[0]
             all_feedbacks[record[0]]["author"] = record[1]
             all_feedbacks[record[0]]["feedback"] = record[2]
         return all_feedbacks
