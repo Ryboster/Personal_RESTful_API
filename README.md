@@ -110,7 +110,7 @@ To `DELETE` a resource, no JSON is required. Simply send a `DELETE` request to `
 
 
 
-`/api/feedback`
+### `/api/feedback`
 
 Supported methods: `GET`, `POST`
 
