@@ -38,9 +38,13 @@ class Router(CRUD):
                     {"href": url_for("API_about", _external=True),
                      "method": "GET"}
                 ]
-                return Response(self.jsonificator.convert_dict_to_json(about_dict), status=200, mimetype="application/json")
+                response = Response(self.jsonificator.convert_dict_to_json(about_dict), status=200, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response
             except Exception:
-                return Response(self.jsonificator.jsonify_error("resource not found"), status=404, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error("resource not found"), status=404, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response
             
         ### /about Endpoint
         ### Headed
@@ -60,7 +64,6 @@ class Router(CRUD):
             
         ### /projects Endpoint
         ### API
-        ## {"rel": "self", "href": url_for("API_get_project", project_ID=project["Project_ID"], _external=True), "method": "GET"},
         @self.app.route("/api/projects", methods=["GET"])
         @self.app.route("/api/projects/<int:project_ID>", methods=["GET"])
         def API_get_projects(project_ID=None):
@@ -71,7 +74,9 @@ class Router(CRUD):
                     if project_ID == ID:
                         requested_project[project_ID] = all_projects[project_ID]
                 if len(requested_project.keys()) == 0:
-                    return Response(self.jsonificator.jsonify_error("resource not found"), status=404, mimetype="application/json")
+                    response = Response(self.jsonificator.jsonify_error("resource not found"), status=404, mimetype="application/json")
+                    response.headers["Cache-Control"] = "no-cache, no-cache"
+                    return response
                 else:
                     requested_project["actions"] = [
                         {"href": url_for("API_get_projects", project_ID=project_ID, _external=True),
@@ -80,7 +85,9 @@ class Router(CRUD):
                          "method": "PUT"},
                         {"href": url_for("API_delete_project", project_ID=project_ID, _external=True),
                          "method": "DELETE"}]
-                    return Response(self.jsonificator.convert_dict_to_json(requested_project), status=200, mimetype="application/json")
+                    response = Response(self.jsonificator.convert_dict_to_json(requested_project), status=200, mimetype="application/json")
+                    response.headers["Cache-Control"] = "no-cache, no-cache"
+                    return response
             else:
                 try:
                     all_projects = self.get_all_projects()
@@ -91,16 +98,21 @@ class Router(CRUD):
                          "method": "POST"}
                     ]
                     json_data = self.jsonificator.convert_dict_to_json(all_projects)
-                    
-                    return Response(json_data, status=200, mimetype="application/json")
+                    response = Response(json_data, status=200, mimetype="application/json")
+                    response.headers["Cache-Control"] = "no-cache, no-cache"
+                    return response
                 except Exception as e:
-                    return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                    response = Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                    response.headers["Cache-Control"] = "no-cache, no-cache"
+                    return response
         
         @self.app.route("/api/projects", methods=["POST"])
         def API_add_project():
             data = request.get_json()
             if not data or not "ProjectName" in data or not "ProjectDescription" in data:
-                return Response(self.jsonificator.jsonify_error("missing fields"), status=400, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error("missing fields"), status=400, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response
             project_name = data.get("ProjectName")
             description = data.get("ProjectDescription")
             try:
@@ -108,7 +120,9 @@ class Router(CRUD):
                             "Projects",
                             values=(project_name,description),
                             columns=("name", "description"))
-                return Response(status=201)
+                response = Response(status=201)
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response 
             except Exception as e:
                 return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
         
@@ -116,22 +130,32 @@ class Router(CRUD):
         def API_edit_project(project_ID):
             data = request.get_json()
             if not data or not "ProjectName" in data or not "ProjectDescription" in data:
-                return Response(self.jsonificator.jsonify_error("missing fields"), status=400, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error("missing fields"), status=400, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response 
             project_name = data.get("ProjectName") 
             description = data.get("ProjectDescription") 
             try:
                 self.update(self.PROJECTS_DB, "Projects", ("Name", "Description"), "Project_ID", project_ID, (project_name, description))
-                return Response(status=200)
+                response = Response(status=200)
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response 
             except Exception as e:
-                return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                
+
             
         @self.app.route("/api/projects/<int:project_ID>", methods=["DELETE"])
         def API_delete_project(project_ID):
             try: 
                 self.delete(self.PROJECTS_DB, "Projects", "Project_ID", project_ID)
-                return Response(status=200)
+                response = Response(status=200)
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response 
             except Exception as e:
-                return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response  
             
         ### /projects Endpoint
         ### Headed
@@ -180,9 +204,13 @@ class Router(CRUD):
                  "method": "GET"},
                 {"href": url_for("API_feedback", _external=True),
                  "method": "POST"}]
-                return Response(self.jsonificator.convert_dict_to_json(feedbacks), mimetype="application/json")
+                response = Response(self.jsonificator.convert_dict_to_json(feedbacks), mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response  
             except Exception as e:
-                return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response
         
         @self.app.route("/api/feedback", methods=["POST"])
         def API_add_feedback():
@@ -196,9 +224,13 @@ class Router(CRUD):
                                     data.get("Feedback")),
                             columns=("Author",
                                      "Feedback"))
-                return Response(status=201)
+                response = Response(status=201)
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response
             except Exception as e:
-                return Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response = Response(self.jsonificator.jsonify_error(e), status=500, mimetype="application/json")
+                response.headers["Cache-Control"] = "no-cache, no-cache"
+                return response
 
         ### /feedback Endpoint
         ### Headed
