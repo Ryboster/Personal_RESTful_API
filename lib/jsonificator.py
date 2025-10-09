@@ -19,3 +19,6 @@ class Jsonificator:
     def convert_dict_to_json(self, dict):
         print(json.dumps(dict))
         return json.dumps(dict)
+    
+    def jsonify_error(self, err):
+        return json.dumps({"error": str(err)})
