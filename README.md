@@ -60,12 +60,73 @@ This directory stores all visual files used by and uploaded to the server.
 
 ### `/static`
 
-Here, you'll find all stylesheets and javascript files used by the templates
+Here, you'll find all stylesheets and javascript files used by the templates.
 
 ### `/templates`
 
-hmmmmmmm...
+This directory contains all templates used in headed requests.
+
+## API
+
+This application uses the `/api` endpoint for headless mode on all of its endpoints.
+
+### `/api/about`
+
+Supported methods: `GET`
+
+### `/api/projects` and `/api/projects/<int:project_ID>`
+
+Supported methods: `GET`, `POST`, `PUT`, `DELETE`
+
+#### `POST`:
+
+to `POST` a new resource, no ID is required. Your request needs to include a valid JSON:
+
+##### structure:
+
+```json
+{
+    ProjectName: "Rice Cooker",
+    ProjectDescription: "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
+}
+```
+
+#### `PUT`
+
+to `PUT`, a valid `project_ID` must be supplied in the URL, e.g. `/api/projects/1`.
+
+##### Structure:
+
+```json
+{
+    ProjectName: "Rice Cooker",
+    ProjectDescription: "In collaboration with Bosch, I designed and built a consumer-grade kitchen appliance."
+}
+```
+
+#### `DELETE`
+
+To `DELETE` a resource, no JSON is required. Simply send a `DELETE` request to `/api/projects/<int:project_ID>`, e.g. `/api/projects/1`.
 
 
 
-# 
+`/api/feedback`
+
+Supported methods: `GET`, `POST`
+
+#### `POST`
+
+to `POST` a new feedback resource, send a `POST` request to `/api/feedback`. Your request must contain a valid JSON:
+
+##### Structure:
+
+```json
+{
+    Author: "John Smith",
+    Feedback: "Great site! Not enough cat pictures though ..."
+}
+```
+
+
+
+#### 
