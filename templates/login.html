@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block HEAD %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock HEAD %}
+
+{% block FORMS %}
+<div id="loginFormContainer" class="loginFormContainer" onclick="this.style.display = 'none'">
+    <form method="POST" onclick="event.stopPropagation();" id="loginForm", class="loginForm">
+        <label> Username: </label>
+        <input name="Username" minlength="3" maxlength="10" required>
+        <label> Password: </label>
+        <input name="Password" maxlength="50" required>
+        <button> Submit </button>
+    </form>
+</div>
+{% endblock FORMS %}
+
+{% block BODY_CONTENT %}
+<button class="loginButton" id="loginButton" onclick="document.getElementById('loginFormContainer').style.display = 'flex'">
+    Login
+</button>
+{% endblock BODY_CONTENT %}

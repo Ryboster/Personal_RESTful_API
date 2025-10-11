@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block HEAD %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+{% endblock HEAD %}
+
+
+{% block FORMS %}
+<div id="registerFormContainer" class="registerFormContainer" onclick="this.style.display = 'none'">
+    <form method="POST" onclick="event.stopPropagation();" id="registerForm", class="registerForm">
+        <label> Username: </label>
+        <input name="Username" pattern=".*[A-Za-z0-9]" minlength="3" maxlength="10" required>
+        <label> Email: </label>
+        <input name="Email" type="email" maxlength="254" required>
+        <label> Password: </label>
+        <input name="Password" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" maxlength="50" required>
+        <button> Submit </button>
+    </form>
+</div>
+{% endblock FORMS %}
+
+{% block BODY_CONTENT %}
+<button class="registerButton" id="registerButton" onclick="document.getElementById('registerFormContainer').style.display = 'flex'">
+    Register
+</button>
+{% endblock BODY_CONTENT %}

@@ -1,0 +1,28 @@
+.loginFormContainer
+{
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.219);
+    height: 100%;
+    width: 100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.loginForm
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.loginButton
+{
+    width: 20%;
+}
+
+.content {
+    justify-content: center;
+    align-items: center;
+}
