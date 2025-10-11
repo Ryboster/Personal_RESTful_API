@@ -9,11 +9,14 @@ It utilizes Jinja blocks to meet that end.
 HEAD block.
 It is used to import css and js files. 
 -->
+
 <head>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"> </script>
 {% block HEAD %}
 {% endblock HEAD %}
 </head>
+
 
 <!--
 This block is for defining forms used in different templates.
@@ -42,6 +45,9 @@ every form, which is 3 columns.
             <button class="navbarButton" onclick="window.location.href='feedback'">
                 Feedback
             </button>
+            <button id="APIButton" class="APIButton">
+                API
+            </button>
         </div>
         <div class="content">
             {% block BODY_CONTENT %}
@@ -60,6 +66,9 @@ FOOTER block.
 This block i'm not sure what it's for.
 -->
 <footer>
+    <script type="text/javascript">
+        getAPIURL();
+    </script>
 {% block FOOTER %}
 {% endblock FOOTER %}
 </footer>

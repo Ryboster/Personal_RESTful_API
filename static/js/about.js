@@ -3,7 +3,7 @@
 function populateSkills(skills)
 {
     console.log(skills)
-    const skillsContainer = document.getElementById("skillsContainer");
+    const skillsContainer = document.getElementById("skillsList");
     skills.forEach(element => {
         const skill = document.createElement("li");
         skill.textContent = element;

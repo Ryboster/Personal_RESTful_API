@@ -18,7 +18,6 @@ except IndexError:
     PORT = 443
     HOST = "0.0.0.0"
 
-
 class DevPortfolio:
     def __init__(self):
         self.app = Flask("Developer Portfolio", static_folder="static")

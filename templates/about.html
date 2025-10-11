@@ -7,7 +7,7 @@ and relevant skills.
 -->
 
 {% block HEAD %}
-<link rel="{{ url_for( 'static', filename='css/about.css' ) }}">
+<link rel="stylesheet" href="{{ url_for( 'static', filename='css/about.css' ) }}">
 <script src="{{ url_for( 'static', filename='js/about.js' ) }}"></script>
 {% endblock HEAD %}
 
@@ -43,13 +43,24 @@ statement (goals/aspirations).
 CV section of this page.
 Lists skills, name, education, etc.
 -->
-<img src="{{ url_for( 'serve_media', path='images/pfp.png' ) }}">
-<b class="nameContainer">{{ name }}</b>
-<p class="occupationContainer">{{ occupation }}</p>
-<i class="educationContainer">{{ education }} </i>
-<ul class="skillsContainer" id="skillsContainer">
-</ul>
-<button onclick="window.location.href='/about/raw'" style="margin-top:auto; margin-bottom:20px;"> raw </button>
+<div id="sidebarHeader" class="sidebarHeader">
+    <img src="{{ url_for( 'serve_media', path='images/pfp.png' ) }}">
+    <b class="nameContainer">{{ name }}</b>
+    <p class="occupationContainer">{{ occupation }}</p>
+    <i class="educationContainer">{{ education }} </i>
+    <div class="skillsContainer", id="skillsContainer">
+        <h5 id="skillsHeader" class="skillsHeader"> Skills: </h5>
+        <ul class="skillsList" id="skillsList" style="list-style-image:url({{ url_for('serve_media', path='images/star16x16.png') }})">
+        </ul>
+    </div>
+</div>
+
+
+
+
+<div class="sidebarFooter" id="sidebarFooter">
+    <button onclick="window.location.href='{{ url_for( 'serve_media', path='pdf/cv.pdf' ) }}'"> CV </button>
+</div>
 {% endblock SIDEBAR_CONTENT %}
 
 {% block FOOTER %}
