@@ -45,21 +45,21 @@
     <div style="display: flex; flex-direction:column;">
         <input name="Co2" id="editFormCo2Input" step="any" type="number" required>
         <select name="Co2Unit" id="editFormCo2Select" required>
-            <option value="1000000000000000"> Gigatons </option>
-            <option value="1000000000000"> Megatons </option>
-            <option value="1000000000"> Kilotons </option>
-            <option value="1000000"> Tons </option>
-            <option value="1000"> Kilograms </option>
-            <option value="1"> Grams </option>
+            <option value="1e15">Gigatons</option>
+            <option value="1e12">Megatons</option>
+            <option value="1e9">Kilotons</option>
+            <option value="1e6">Tons</option>
+            <option value="1e3">Kilograms</option>
+            <option value="1">Grams</option>
         </select>
     </div>
     <label> Timespan </label>
     <div style="display: flex; flex-direction:column;">
         <input name="Timespan" id="editFormTimespanInput" step="any" type="number" required>
         <select name="TimespanUnit" id="editFormTimespanSelect" required>
-            <option value="29030400"> Years </opion>
+            <option value="29030400"> Years </option>
             <option value="2419200"> Months </option>
-            <option value="604800"> Weeks </otpion>
+            <option value="604800"> Weeks </option>
             <option value="86400"> Days </option>
             <option value="3600"> Hours </option>
             <option value="60"> Minutes </option>

@@ -177,8 +177,8 @@ class Headed_Endpoints(CRUD):
                                           db="co2submissions.sqlite3",
                                           values=(request.form['Source'],
                                                   request.form['Fact'],
-                                                  float(request.form['Co2']) * int(request.form["Co2Unit"]),
-                                                  float(request.form["Timespan"]) * int(request.form["TimespanUnit"])),
+                                                  float(request.form['Co2']) * float(request.form["Co2Unit"]),
+                                                  float(request.form["Timespan"]) * float(request.form["TimespanUnit"])),
                                           columns=("Source", "Fact", "Co2", "Timespan"))
                     return redirect(url_for("co2_fact_submissions", message=message))
                 
@@ -188,8 +188,8 @@ class Headed_Endpoints(CRUD):
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form["Source"], 
                                                   request.form["Fact"], 
-                                                  float(request.form['Co2']) * int(request.form["Co2Unit"]),
-                                                  float(request.form["Timespan"]) * int(request.form["TimespanUnit"])),
+                                                  float(request.form['Co2']) * float(request.form["Co2Unit"]),
+                                                  float(request.form["Timespan"]) * float(request.form["TimespanUnit"])),
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
