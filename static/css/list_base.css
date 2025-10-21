@@ -1,0 +1,48 @@
+.buttonsBar 
+{
+    display:flex;
+    background-color: rgba(0, 0, 0, 0.253);
+    flex-direction: row;
+    justify-content: center;
+    margin-top: auto;
+    margin-bottom: 10px;
+}
+
+.addFormContainer,
+.editFormContainer,
+.deleteFormContainer
+{
+    position:fixed;
+    z-index:1;
+    background-color: rgba(0, 0, 0, 0.11);
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.addForm,
+.editForm,
+.deleteForm
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.contentContainer
+{
+    display: flex;
+    flex-direction: column;
+}
+.contentContainer .entry:hover
+{
+    background-color: rgba(255, 255, 255, 0.041);
+}
+
+.contentContainer .entryHeader
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}

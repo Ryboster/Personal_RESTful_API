@@ -1,40 +1,28 @@
-{% extends 'base.html' %}
+{% extends 'list_base.html' %}
 
 <!--
 This template displays feedback submitted by people,
 and defines the form used in submitting that feedback.
 -->
 
-{% block HEAD %}
-<link rel="stylesheet" href="{{ url_for( 'static', filename='css/feedback.css' ) }}">
-<script type="text/javascript" src="{{ url_for('static', filename="js/feedback.js") }}"> </script>
-{% endblock HEAD %}
+{% block HEAD1 %}
+    <script type="text/javascript" src="{{ url_for('static', filename="js/feedback.js") }}"> </script>
+{% endblock HEAD1 %}
+        
+{% block ADD_FORM %}
+    <label> Author: </label>
+    <input name="Author" required> 
+    <label> Feedback: </label>
+    <input name="Feedback" required>
+{% endblock ADD_FORM %}
 
-{% block FORMS %}
-<div class="submitFeedbackFormContainer" id="submitFeedbackFormContainer" onclick="this.style.display='none';">
-    <form method="POST" action="feedback/submit" onclick="event.stopPropagation();">
-        <label> Author: </label>
-        <input name="Author" required> 
-        <label> Feedback: </label>
-        <input name="Feedback" required>
-        <button type="submit" > submit </button> 
-    </form>
-</div>
-{% endblock FORMS %}
-
-{% block BODY_CONTENT %}
-<div class="feedbacksContainer" id="feedbacksContainer">
-</div>
-
-<div class="buttonsBar">
-    <button class="addProjectButton" id="addProjectButton" onclick="showSubmitFeedbackForm()">
-        +
-    </button>
-</div>
-{% endblock BODY_CONTENT %}
-
-{% block SIDEBAR_CONTENT %}
-{% endblock SIDEBAR_CONTENT %}
+{% block DELETE_FORM %}
+    <input name="ID" id="deleteFormIDInput" type="hidden" required readonly>
+    <label> Feedback: </label>
+    <input id="deleteFormFeedbackInput" readonly>
+    <label> From Author: </label>
+    <input id="deleteFormAuthorInput" readonly>
+{% endblock DELETE_FORM %}
 
 {% block FOOTER %}
 <script type="text/javascript">

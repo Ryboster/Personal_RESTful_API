@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'list_base.html' %}
 
 <!--
 This template showcases my projects. It receives and displays
@@ -9,60 +9,31 @@ At the moment anyone can post whatever, but in future, this functionality
 will be gated.
 -->
 
-{% block HEAD %}
-<link rel="stylesheet" href="{{ url_for( 'static', filename='css/projects.css' ) }}">
-<script type="text/javascript" src="{{ url_for( 'static', filename='js/projects.js' ) }}"></script>
-{% endblock HEAD %}
+{% block HEAD1 %}
+    <link rel="stylesheet" href="{{ url_for( 'static', filename='css/projects.css' ) }}">
+    <script type="text/javascript" src="{{ url_for( 'static', filename='js/projects.js' ) }}"></script>
+{% endblock HEAD1 %}
 
-{% block FORMS %}
-<div class="addProjectFormContainer" id="addProjectFormContainer" onclick="hideForm(this)">
-    <form method="POST" action="projects/add" onclick="event.stopPropagation()">
-        <label> Name: </label>
-        <input name="ProjectName" required>
-        <label> Description </label>
-        <textarea name="ProjectDescription" required></textarea>
-        <button type="submit"> Submit </button>
-    </form>
-</div>
+{% block ADD_FORM %}
+    <label> Name: </label>
+    <input name="Name" required>
+    <label> Description: </label>
+    <textarea name="Description" required></textarea>
+{% endblock ADD_FORM %}
 
-<div class="editProjectFormContainer" id="editProjectFormContainer" onclick="hideForm(this)">
-    <form method="POST" action="projects/edit" onclick="event.stopPropagation()">
-        <input id="editProjectFormIDInput" name="ProjectID" hidden>
-        <label> Name: </label>
-        <input name="ProjectName" id="editProjectFormNameInput" required>
-        <label> Description </label>
-        <textarea name="ProjectDescription" id="editProjectFormDescriptionInput" required></textarea>
-        <button type="submit"> Submit </button>
-    </form>
-</div>
+{% block EDIT_FORM %}
+    <input id="editFormIDInput" name="ID" hidden>
+    <label> Name: </label>
+    <input name="Name" id="editFormNameInput" required>
+    <label> Description: </label>
+    <textarea name="Description" id="editFormDescriptionInput" required></textarea>
+{% endblock EDIT_FORM %}
 
-<div class="removeProjectFormContainer" id="removeProjectFormContainer" onclick="hideForm(this)">
-    <form method="POST" action="projects/remove" onclick="event.stopPropagation()">
-        <input id="removeProjectFormIDInput" name="ProjectID" hidden>
-        <input name="ProjectName" id="removeProjectFormNameInput" readonly> 
-        <button type="submit"> Submit </button>
-    </form>
-</div>
-{% endblock FORMS %}
+{% block DELETE_FORM %}
+    <input id="deleteFormIDInput" name="ID" hidden>
+    <input name="Name" id="deleteFormNameInput" readonly> 
+{% endblock DELETE_FORM %}
 
-{% block BODY_CONTENT %}
-<div class="projectsContainer" id="projectsContainer">
-</div>
-<div class="buttonsBar">
-    <button class="addProjectButton" id="addProjectButton" onclick="showAddProjectForm()">
-        +
-    </button>
-    <button class="editProjectButton" id="editProjectButton" onclick="showEditProjectForm()" disabled>
-        Edit
-    </button>
-    <button class="removeProjectButton" id="removeProjectButton" onclick="showRemoveProjectForm()" disabled>
-        X
-    </button>
-</div>
-{% endblock BODY_CONTENT %}
-
-{% block SIDEBAR_CONTENT %}
-{% endblock SIDEBAR_CONTENT %}
 
 {% block FOOTER %}
 <script type="text/javascript">

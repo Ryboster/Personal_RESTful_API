@@ -36,14 +36,17 @@ every form, which is 3 columns.
         <div class="navbar">
             {% block NAVBAR_CONTENT %}
             {% endblock NAVBAR_CONTENT %}
-            <button class="navbarButton" onclick="window.location.href='about'">
+            <button class="navbarButton" onclick="window.location.href='{{url_for('about')}}'">
                 About
             </button>
-            <button class="navbarButton" onclick="window.location.href='projects'">
+            <button class="navbarButton" onclick="window.location.href='{{url_for('projects')}}'">
                 Projects
             </button>
-            <button class="navbarButton" onclick="window.location.href='feedback'">
+            <button class="navbarButton" onclick="window.location.href='{{url_for('feedback')}}'">
                 Feedback
+            </button>
+            <button class="navbarButton" onclick="window.location.href='{{url_for('collaborations')}}'">
+                Collaborations
             </button>
             <button id="APIButton" class="APIButton">
                 API

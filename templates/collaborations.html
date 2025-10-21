@@ -1,0 +1,37 @@
+
+{% extends 'list_base.html' %}
+
+{% block HEAD1 %}
+    <script src="{{ url_for( 'static', filename="js/collaborations.js") }}"> </script>
+{% endblock HEAD1 %}
+
+{% block ADD_FORM %}
+    <label> Collaboration Name: </label>
+    <input name="Name" required>
+    <label> Description </label>
+    <textarea name="Description" required> </textarea>
+{% endblock ADD_FORM %}
+
+{% block EDIT_FORM %}
+    <input id="editFormIDInput" type="hidden" name="ID" readonly required> 
+    <label> Collaboration Name: </label>
+    <input id="editFormNameInput" name="Name" required>
+    <label> Description </label>
+    <textarea id="editFormDescriptionInput" name="Description" required> </textarea>
+{% endblock EDIT_FORM %}
+
+{% block DELETE_FORM %}
+    <input id="deleteFormIDInput" type="hidden" name="ID" readonly required> 
+    <label> Collaboration Name: </label>
+    <input id="deleteFormNameInput" name="Name" required>
+{% endblock DELETE_FORM %}
+
+{% block SIDEBAR_CONTENT %}
+    <button onclick="window.location.href='collaborators'"> Collaborators </button>
+{% endblock SIDEBAR_CONTENT %}
+
+{% block FOOTER %}
+    <script type="text/javascript">
+        populateCollaborations({{ collaborations|tojson }})
+    </script>
+{% endblock FOOTER %}

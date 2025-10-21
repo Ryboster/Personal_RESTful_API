@@ -1,0 +1,38 @@
+{% extends 'list_base.html' %}
+
+{% block HEAD1 %}
+    <script src="{{url_for('static', filename='js/collaborators.js')}}"> </script>
+{% endblock HEAD1 %}
+
+{% block ADD_FORM %}
+    <label>Name:</label>
+    <input name="Name" required>
+    <label>Role:</label>
+    <input name="Role" required>
+    <label>Social URL</label>
+    <input name="Social">
+{% endblock ADD_FORM %}
+
+
+{% block EDIT_FORM %}
+    <input name="ID" id="editFormIDInput" type="hidden" required readonly> 
+    <label>Name:</label>
+    <input name="Name" id="editFormNameInput" required>
+    <label>Role:</label>
+    <input name="Role" id="editFormRoleInput" required>
+    <label>Social URL</label>
+    <input name="Social" id="editFormSocialInput">
+{% endblock EDIT_FORM %}
+
+
+{% block DELETE_FORM %}
+    <input name="ID" id="deleteFormIDInput" type="hidden" required readonly> 
+    <label>Name:</label>
+    <input name="Name" id="deleteFormNameInput" readonly>
+{% endblock DELETE_FORM %}
+
+{% block FOOTER %}
+    <script type="text/javascript">
+        populateCollaborators({{ collaborators|tojson }})
+    </script>
+{% endblock FOOTER %}

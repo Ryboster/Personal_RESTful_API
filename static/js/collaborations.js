@@ -1,32 +1,28 @@
-var selected = null;
-
-// Receive all project entries from backend, and while containerizing,
-// populate the projects container/list.
-function populateProjects(projects)
+function populateCollaborations(projects)
 {
     const container = document.getElementById("contentContainer");
-    for (const [key, val] of Object.entries(projects)) 
+    for (const [key,val] of Object.entries(projects))
     {
         const entry = document.createElement("div"); entry.className = "entry";
         const header = document.createElement("span"); header.className = "entryHeader";
-        const name = document.createElement("h3");
-        const ID = document.createElement("p");
-        const description = document.createElement("p");
+        const name = document.createElement("h3"); name.className = "entryName";
+        const ID = document.createElement("p"); ID.className = "entryID";
+        const description = document.createElement("p"); description.className = "entryDescription";
 
-        name.textContent = val["project_name"];
-        description.textContent = val["project_description"];
+        name.textContent = val["Name"];
+        description.textContent = val["Description"];
         ID.textContent = key;
 
         header.appendChild(name);
         header.appendChild(ID);
         entry.appendChild(header);
         entry.appendChild(description);
-        
+        container.appendChild(entry);
+
         entry.onclick = function() {select(entry)};
         entry.setAttribute("entryID", key);
-        entry.setAttribute("entryName", val["project_name"]);
-        entry.setAttribute("entryDescription", val["project_description"]);
-        container.appendChild(entry);
+        entry.setAttribute("entryName", val["Name"]);
+        entry.setAttribute("entryDescription", val["Description"]);
     }
 }
 

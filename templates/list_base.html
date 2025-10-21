@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+
+{% block HEAD %}
+    <link rel="stylesheet" href="{{ url_for( 'static', filename='css/list_base.css' ) }}">
+    <script src="{{ url_for( 'static', filename='js/list_base.js' ) }}"> </script>
+    {% block HEAD1 %}
+    {% endblock HEAD1 %}
+{% endblock HEAD %}
+
+{% block FORMS %}
+    <div id="addFormContainer" class="addFormContainer" style="display:none;" onclick="this.style.display = 'none'">
+        <form onclick="event.stopPropagation()" id="addForm" class="addForm" method="POST">
+            <input name="_method" readonly type="hidden" value="POST">
+            {% block ADD_FORM %}
+            {% endblock ADD_FORM %}
+            <button type="submit"> Submit </button>
+        </form>
+    </div>
+
+    <div id="editFormContainer" class="editFormContainer" style="display:none;" onclick="this.style.display = 'none'">
+        <form onclick="event.stopPropagation()" id="editForm" class="editForm" method="POST">
+            <input name="_method" readonly type="hidden" value="PUT">
+            {% block EDIT_FORM %}
+            {% endblock EDIT_FORM %}
+            <button type="submit"> Submit </button>
+        </form>
+    </div>
+
+    <div id="deleteFormContainer" class="deleteFormContainer" style="display:none;" onclick="this.style.display = 'none'">
+        <form onclick="event.stopPropagation()" id="deleteForm" class="deleteForm" method="POST">
+            <input name="_method" readonly type="hidden" value="DELETE">
+            {% block DELETE_FORM %}
+            {% endblock DELETE_FORM %}
+            <button type="submit"> Submit </button>
+        </form>
+    </div>
+{% endblock FORMS %}
+
+{% block BODY_CONTENT %}
+    <div id="contentContainer" class="contentContainer">
+    </div>
+    <div id="messageBox" class="messageBox">
+        <p> {{ message }} </p>
+    </div>
+    <div class="buttonsBar">
+        <button class="addEntryButton" id="addEntryButton" onclick="showAddForm()">
+            Add
+        </button>
+        <button class="editEntryButton" id="editEntryButton" onclick="showEditForm()" disabled>
+            Edit
+        </button>
+        <button class="deleteEntryButton" id="deleteEntryButton" onclick="showDeleteForm()" disabled>
+            Delete
+        </button>
+    </div>
+{% endblock BODY_CONTENT %}
