@@ -43,7 +43,7 @@
     <textarea name="Fact" id="editFormFactInput" type="text" required></textarea>
     <label> Co2 </label>
     <div style="display: flex; flex-direction:column;">
-        <input name="Co2" id="editFormCo2Input" type="number" required>
+        <input name="Co2" id="editFormCo2Input" step="any" type="number" required>
         <select name="Co2Unit" id="editFormCo2Select" required>
             <option value="1000000000000000"> Gigatons </option>
             <option value="1000000000000"> Megatons </option>
@@ -55,7 +55,7 @@
     </div>
     <label> Timespan </label>
     <div style="display: flex; flex-direction:column;">
-        <input name="Timespan" id="editFormTimespanInput" type="number" required>
+        <input name="Timespan" id="editFormTimespanInput" step="any" type="number" required>
         <select name="TimespanUnit" id="editFormTimespanSelect" required>
             <option value="29030400"> Years </opion>
             <option value="2419200"> Months </option>

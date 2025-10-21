@@ -79,7 +79,7 @@ class Creator:
             Submission_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL CHECK(typeof(Submission_ID) = 'integer'),
             Source TEXT UNIQUE NOT NULL,
             Fact TEXT UNIQUE NOT NULL,
-            CO2 INTEGER NOT NULL,
+            Co2 REAL NOT NULL,
             Timespan INTEGER NOT NULL
         )
         """

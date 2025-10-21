@@ -173,13 +173,12 @@ class Headed_Endpoints(CRUD):
                 return render_template("co2_fact_submissions.html", submissions=submissions, message=message)
             else:
                 if request.form["_method"] == "POST":
-                    print(request.form)
                     message = self.create(table="Submissions",
                                           db="co2submissions.sqlite3",
                                           values=(request.form['Source'],
                                                   request.form['Fact'],
-                                                  int(request.form['Co2']) * int(request.form["Co2Unit"]),
-                                                  int(request.form["Timespan"]) * int(request.form["TimespanUnit"])),
+                                                  float(request.form['Co2']) * int(request.form["Co2Unit"]),
+                                                  float(request.form["Timespan"]) * int(request.form["TimespanUnit"])),
                                           columns=("Source", "Fact", "Co2", "Timespan"))
                     return redirect(url_for("co2_fact_submissions", message=message))
                 
@@ -189,8 +188,8 @@ class Headed_Endpoints(CRUD):
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form["Source"], 
                                                   request.form["Fact"], 
-                                                  int(request.form['Co2']) * int(request.form["Co2Unit"]),
-                                                  int(request.form["Timespan"]) * int(request.form["TimespanUnit"])),
+                                                  float(request.form['Co2']) * int(request.form["Co2Unit"]),
+                                                  float(request.form["Timespan"]) * int(request.form["TimespanUnit"])),
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
