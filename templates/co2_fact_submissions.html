@@ -10,7 +10,7 @@
     <label> Source </label>
     <input name="Source" required>
     <label> Fact </label>
-    <textarea name="Fact" type="text" required> </textarea>
+    <textarea name="Fact" type="text" required></textarea>
     <label> Co2 </label>
     <div style="display: flex; flex-direction:column;">
         <input name="Co2" type="number" required>
@@ -40,12 +40,15 @@
     <label> Source </label>
     <input name="Source" id="editFormSourceInput" required>
     <label> Fact </label>
-    <textarea name="Fact" id="editFormFactInput" type="text" required> </textarea>
+    <textarea name="Fact" id="editFormFactInput" type="text" required></textarea>
     <label> Co2 </label>
     <div style="display: flex; flex-direction:column;">
         <input name="Co2" id="editFormCo2Input" type="number" required>
         <select name="Co2Unit" id="editFormCo2Select" required>
-            <option value="1000000"> Tonnes </option>
+            <option value="1000000000000000"> Gigatons </option>
+            <option value="1000000000000"> Megatons </option>
+            <option value="1000000000"> Kilotons </option>
+            <option value="1000000"> Tons </option>
             <option value="1000"> Kilograms </option>
             <option value="1"> Grams </option>
         </select>
