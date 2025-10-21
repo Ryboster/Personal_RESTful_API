@@ -36,7 +36,7 @@ class CRUD(Creator):
         self.close_connection()
         
     def open_connection(self, db=DB_FILENAME):
-        path = os.path.join(os.getcwd(), "lib", DATABASE_DIR, DB_FILENAME)
+        path = os.path.join(os.getcwd(), "lib", DATABASE_DIR, db)
         self.connection = sqlite3.connect(path)
         self.connection.execute('PRAGMA foreign_keys = ON')
         self.cursor = self.connection.cursor()
@@ -46,7 +46,7 @@ class CRUD(Creator):
         self.connection.close()
         
     def create(self, table: str, values=(), columns=(), db=DB_FILENAME):
-        self.open_connection()
+        self.open_connection(db=db)
         if columns == ():
             secureQuery = f"INSERT INTO {table} VALUES ({self.get_values_placeholder(values)})"
         else:
@@ -68,7 +68,7 @@ class CRUD(Creator):
             raise ValueError(f"Invalid selection columns: {selection}")
         if where_column is not None and not is_safe_identifier(where_column):
             raise ValueError(f"Invalid WHERE column: {where_column}")
-        self.open_connection()
+        self.open_connection(db=db)
         try:
             if where_column is None:
                 query = f"SELECT {selection} FROM {table}"
@@ -87,7 +87,7 @@ class CRUD(Creator):
         return result
     
     def update(self, table: str, columns, where_column: str, where_value, values, db=DB_FILENAME):
-        self.open_connection()
+        self.open_connection(db=db)
         set_clause = ", ".join([f"{col} = ?" for col in columns])
         query = f"UPDATE {table} SET {set_clause} WHERE {where_column} = ?"
         
@@ -101,7 +101,7 @@ class CRUD(Creator):
         self.close_connection()
 
     def delete(self, table: str, where_column: str, where_value, and_column="", and_value="", db=DB_FILENAME):
-        self.open_connection()
+        self.open_connection(db=db)
         if not and_column:
             query = f"DELETE FROM {table} WHERE {where_column} = ?"
             self.cursor.execute(query, (where_value,))
