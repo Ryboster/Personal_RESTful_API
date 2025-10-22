@@ -177,8 +177,8 @@ class Headed_Endpoints(CRUD):
                                           db="co2submissions.sqlite3",
                                           values=(request.form['Source'],
                                                   request.form['Fact'],
-                                                  float(request.form['Co2']) * float(request.form["Co2Unit"]),
-                                                  float(request.form["Timespan"]) * float(request.form["TimespanUnit"])),
+                                                  atomize_co2(request.form['Co2'], request.form["Co2Unit"]),
+                                                  atomize_timespan(request.form["Timespan"], request.form["TimespanUnit"])),
                                           columns=("Source", "Fact", "Co2", "Timespan"))
                     return redirect(url_for("co2_fact_submissions", message=message))
                 
@@ -188,8 +188,8 @@ class Headed_Endpoints(CRUD):
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form["Source"], 
                                                   request.form["Fact"], 
-                                                  float(request.form['Co2']) * float(request.form["Co2Unit"]),
-                                                  float(request.form["Timespan"]) * float(request.form["TimespanUnit"])),
+                                                  atomize_co2(request.form['Co2'], request.form["Co2Unit"]),
+                                                  atomize_timespan(request.form["Timespan"], request.form["TimespanUnit"])),
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
@@ -200,3 +200,35 @@ class Headed_Endpoints(CRUD):
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
+                
+        def atomize_co2(x, unit):
+            match unit:
+                case "gt":
+                    return float(x) * 1000000000000000
+                case "mt":
+                    return float(x) * 1000000000000
+                case "kt":
+                    return float(x) * 1000000000
+                case "t":
+                    return float(x) * 1000000
+                case "kg":
+                    return float(x) * 1000
+                case "g":
+                    return float(x)
+                
+        def atomize_timespan(x, unit):
+            match unit:
+                case "y":
+                    return float(x) * 31557600
+                case "m":
+                    return float(x) * 2629746
+                case "w":
+                    return float(x) * 604800
+                case "d":
+                    return float(x) * 86400
+                case "h":
+                    return float(x) * 3600
+                case "m":
+                    return float(x) * 60
+                case "s":
+                    return float(x)
