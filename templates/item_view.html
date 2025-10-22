@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block HEAD %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/item_view.css')}}">
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+{% endblock HEAD %}
+
+{% block FORMS %}
+<div id="editFormContainer" class="editFormContainer" style="display: none;" onclick="this.style.display = 'none';">
+    <form onclick="event.stopPropagation()" id="editForm" class="editForm" method="POST">
+        <textarea name="Content" id="contentEditor" style="height: 300px; width: 100%;"></textarea>
+        <button type="submit"> Submit </button>
+    </form>
+</div>
+{% endblock FORMS %}
+
+{% block BODY_CONTENT %}
+<div id="viewContent" class="viewContent">
+{{ content|safe }}
+</div>
+<div class="buttonsBar">
+        <button class="editEntryButton" id="editEntryButton" onclick="showEditForm();">
+            Edit
+        </button>
+    </div>
+{% endblock BODY_CONTENT %}
+
+
+{% block FOOTER %}
+<script type="text/javascript">
+
+    const initialContent = `{{ content|safe }}`;
+
+    function showEditForm()
+    {
+        const container = document.getElementById("editFormContainer");
+        container.style.display = "flex";
+        CKEDITOR.instances['contentEditor'].setData(initialContent);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        CKEDITOR.replace('contentEditor');
+        
+    });
+</script>
+{% endblock FOOTER %}

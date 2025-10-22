@@ -48,8 +48,8 @@ function populateEditForm()
     document.getElementById("editFormCo2Input").value = selected.getAttribute("entryCo2");
     document.getElementById("editFormSourceInput").value = selected.getAttribute("entrySource");
     document.getElementById("editFormTimespanInput").value = selected.getAttribute("entryTimespan");
-    document.getElementById("editFormCo2Select").value = "g";
-    document.getElementById("editFormTimespanSelect").value = "s";
+    document.getElementById("editFormCo2Select").value = "1";
+    document.getElementById("editFormTimespanSelect").value = "1";
 }
 
 function populateDeleteForm()

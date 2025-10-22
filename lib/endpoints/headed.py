@@ -2,6 +2,7 @@ from flask import render_template, send_from_directory, request, redirect, Respo
 import os
 from lib.jsonificator import Jsonificator
 from lib.crud import CRUD
+import shutil
 
 class Headed_Endpoints(CRUD):
     def __init__(self):
@@ -30,12 +31,28 @@ class Headed_Endpoints(CRUD):
             
         ### /projects Endpoint
         @app.route("/projects", methods=["GET", "POST"])
-        def projects():
+        @app.route("/projects/<int:project_ID>", methods=["GET", "POST"])
+        def projects(project_ID=None):
             if request.method == "GET":
-                message = request.args.get("message") if request.args.get("message") != None else ""
-                all_projects = self.get_all_projects()
-                return render_template("projects.html", projects=all_projects, message=message)
+                if project_ID == None:
+                    message = request.args.get("message") if request.args.get("message") != None else ""
+                    all_projects = self.get_all_projects()
+                    return render_template("projects.html", projects=all_projects, message=message)
+                else:
+                    content = self.read(table="Projects",
+                                        selection="Content",
+                                        where_column=("Project_ID"),
+                                        where_value=project_ID)[0][0]
+                    return render_template("item_view.html", content=content)
             else:
+                if project_ID:
+                    self.update(table="Projects",
+                                columns=("Content",),
+                                where_column="Project_ID",
+                                where_value=project_ID,
+                                values=(request.form["Content"],))
+                    return redirect(url_for("projects", project_ID=project_ID))
+                
                 if request.form["_method"] == "POST":
                     message = self.create("Projects",
                                           values=(request.form["Name"] ,request.form["Description"]),
@@ -112,18 +129,39 @@ class Headed_Endpoints(CRUD):
             return send_from_directory(app.config["MEDIA_FOLDER"], path)    
         
         @app.route('/collaborations', methods=["GET", "POST"])
-        def collaborations():
+        @app.route('/collaborations/<int:collaboration_ID>', methods=["GET", "POST"])
+        def collaborations(collaboration_ID=None):
             if request.method == "GET":
-                message = request.args.get("message") if request.args.get("message") != None else ""
-                collaborations = self.get_all_collaborations()
-                return render_template("collaborations.html", collaborations=collaborations, message=message)
+                if collaboration_ID == None:
+                    message = request.args.get("message") if request.args.get("message") != None else ""
+                    collaborations = self.get_all_collaborations()
+                    return render_template("collaborations.html", collaborations=collaborations, message=message)
+                else:                    
+                    content = self.read(table="Collaborations",
+                                        selection="Content",
+                                        where_column="Collaboration_ID",
+                                        where_value=collaboration_ID)[0][0]
+                    return render_template("item_view.html", content=content)
             
             elif request.method == "POST":
+                
+                if collaboration_ID != None:
+                    print(request.form["Content"])
+                    self.update(table="Collaborations",
+                                columns=("Content",),
+                                values=(request.form["Content"],),
+                                where_column="Collaboration_ID",
+                                where_value=collaboration_ID)
+                    return redirect(url_for("collaborations", collaboration_ID=collaboration_ID))
+                
                 if request.form["_method"] == "POST":
-                    message = self.create(table="Collaborations",
-                                                values=(request.form["Name"],request.form["Description"]),
-                                                columns=("Name","Description"))
-                    return redirect(url_for("collaborations",message=message))
+                    if collaboration_ID == None:
+                        message = self.create(table="Collaborations",
+                                              values=(request.form["Name"],request.form["Description"]),
+                                              columns=("Name","Description"))
+                        return redirect(url_for("collaborations",message=message))
+
+                        
                 
                 elif request.form['_method'] == "PUT":
                     message = self.update(table="Collaborations",
@@ -175,11 +213,11 @@ class Headed_Endpoints(CRUD):
                 if request.form["_method"] == "POST":
                     message = self.create(table="Submissions",
                                           db="co2submissions.sqlite3",
+                                          columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form['Source'],
                                                   request.form['Fact'],
-                                                  atomize_co2(request.form['Co2'], request.form["Co2Unit"]),
-                                                  atomize_timespan(request.form["Timespan"], request.form["TimespanUnit"])),
-                                          columns=("Source", "Fact", "Co2", "Timespan"))
+                                                  float(request.form['Co2']) * float(request.form["Co2Unit"]),
+                                                  float(request.form["Timespan"]) * float(request.form["TimespanUnit"])))
                     return redirect(url_for("co2_fact_submissions", message=message))
                 
                 elif request.form["_method"] == "PUT":
@@ -188,8 +226,8 @@ class Headed_Endpoints(CRUD):
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form["Source"], 
                                                   request.form["Fact"], 
-                                                  atomize_co2(request.form['Co2'], request.form["Co2Unit"]),
-                                                  atomize_timespan(request.form["Timespan"], request.form["TimespanUnit"])),
+                                                  float(request.form['Co2']) * float(request.form["Co2Unit"]),
+                                                  float(request.form["Timespan"]) * float(request.form["TimespanUnit"])),
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
@@ -200,35 +238,3 @@ class Headed_Endpoints(CRUD):
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
-                
-        def atomize_co2(x, unit):
-            match unit:
-                case "gt":
-                    return float(x) * 1000000000000000
-                case "mt":
-                    return float(x) * 1000000000000
-                case "kt":
-                    return float(x) * 1000000000
-                case "t":
-                    return float(x) * 1000000
-                case "kg":
-                    return float(x) * 1000
-                case "g":
-                    return float(x)
-                
-        def atomize_timespan(x, unit):
-            match unit:
-                case "y":
-                    return float(x) * 31557600
-                case "m":
-                    return float(x) * 2629746
-                case "w":
-                    return float(x) * 604800
-                case "d":
-                    return float(x) * 86400
-                case "h":
-                    return float(x) * 3600
-                case "min":
-                    return float(x) * 60
-                case "s":
-                    return float(x)

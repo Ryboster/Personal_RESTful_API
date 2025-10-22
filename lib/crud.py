@@ -122,6 +122,7 @@ class CRUD(Creator):
             all_projects[record[0]]["project_ID"] = record[0]
             all_projects[record[0]]['project_name'] = record[1]
             all_projects[record[0]]['project_description'] = record[2]
+            all_projects[record[0]]["Content"] = record[3]
         return all_projects
     
     def get_all_feedbacks(self):
@@ -139,6 +140,7 @@ class CRUD(Creator):
             all_collaborations[record[0]] = {}
             all_collaborations[record[0]]["Name"] = record[1]
             all_collaborations[record[0]]["Description"] = record[2]
+            all_collaborations[record[0]]["Content"] = record[3]
         return all_collaborations
     
     def get_all_collaborators(self):

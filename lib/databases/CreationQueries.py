@@ -11,7 +11,8 @@ class Creator:
         (
             Project_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL CHECK(typeof(Project_ID) = 'integer'),
             Name TEXT NOT NULL CHECK(typeof(Name) = 'text'),
-            Description TEXT NOT NULL CHECK(typeof(Description) = 'text')
+            Description TEXT NOT NULL CHECK(typeof(Description) = 'text'),
+            Content TEXT
         )
         """
         
@@ -48,7 +49,8 @@ class Creator:
         (
             Collaboration_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL CHECK(typeof(Collaboration_ID) = "integer"),
             Name TEXT UNIQUE NOT NULL,
-            Description TEXT UNIQUE NOT NULL
+            Description TEXT UNIQUE NOT NULL,
+            Content TEXT
         )
         """
         

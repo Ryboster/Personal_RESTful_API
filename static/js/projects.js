@@ -9,15 +9,19 @@ function populateProjects(projects)
     {
         const entry = document.createElement("div"); entry.className = "entry";
         const header = document.createElement("span"); header.className = "entryHeader";
+        const project_URL = document.createElement("a");
         const name = document.createElement("h3");
         const ID = document.createElement("p");
         const description = document.createElement("p");
+
+        project_URL.href = "/projects/" + key;
 
         name.textContent = val["project_name"];
         description.textContent = val["project_description"];
         ID.textContent = key;
 
-        header.appendChild(name);
+        project_URL.appendChild(name);
+        header.appendChild(project_URL);
         header.appendChild(ID);
         entry.appendChild(header);
         entry.appendChild(description);

@@ -1,0 +1,28 @@
+.buttonsBar 
+{
+    display:flex;
+    background-color: rgba(0, 0, 0, 0.253);
+    flex-direction: row;
+    justify-content: center;
+    margin-top: auto;
+    margin-bottom: 10px;
+}
+
+.editFormContainer
+{
+    position:fixed;
+    z-index:1;
+    background-color: rgba(0, 0, 0, 0.11);
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.viewContent
+{
+    overflow: auto;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}

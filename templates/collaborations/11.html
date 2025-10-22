@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block HEAD %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/collaboration_template.css')}}">
+<script src="{{url_for('static', filename='js/collaboration_template.js')}}"> </script>
+{% endblock HEAD %}
+
+{% block BODY_CONTENT %}
+{{ content }}
+<div class="buttonsBar">
+        <button class="addEntryButton" id="addEntryButton" onclick="showAddForm()">
+            Add
+        </button>
+        <button class="editEntryButton" id="editEntryButton" onclick="showEditForm()" disabled>
+            Edit
+        </button>
+        <button class="deleteEntryButton" id="deleteEntryButton" onclick="showDeleteForm()" disabled>
+            Delete
+        </button>
+    </div>
+{% endblock BODY_CONTENT %}

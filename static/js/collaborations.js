@@ -5,15 +5,18 @@ function populateCollaborations(projects)
     {
         const entry = document.createElement("div"); entry.className = "entry";
         const header = document.createElement("span"); header.className = "entryHeader";
-        const name = document.createElement("h3"); name.className = "entryName";
-        const ID = document.createElement("p"); ID.className = "entryID";
-        const description = document.createElement("p"); description.className = "entryDescription";
+        const collaboration_url = document.createElement("a");
+        const name = document.createElement("h3");
+        const ID = document.createElement("p");
+        const description = document.createElement("p");
 
         name.textContent = val["Name"];
         description.textContent = val["Description"];
         ID.textContent = key;
 
-        header.appendChild(name);
+        collaboration_url.href = "/collaborations/" + key;
+        collaboration_url.appendChild(name);
+        header.appendChild(collaboration_url);
         header.appendChild(ID);
         entry.appendChild(header);
         entry.appendChild(description);
