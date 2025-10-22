@@ -228,7 +228,7 @@ class Headed_Endpoints(CRUD):
                     return float(x) * 86400
                 case "h":
                     return float(x) * 3600
-                case "m":
+                case "min":
                     return float(x) * 60
                 case "s":
                     return float(x)
