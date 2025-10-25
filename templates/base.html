@@ -9,14 +9,12 @@ It utilizes Jinja blocks to meet that end.
 HEAD block.
 It is used to import css and js files. 
 -->
-
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"> </script>
 {% block HEAD %}
 {% endblock HEAD %}
 </head>
-
 
 <!--
 This block is for defining forms used in different templates.
@@ -61,7 +59,6 @@ every form, which is 3 columns.
             {% block SIDEBAR_CONTENT %}
             {% endblock SIDEBAR_CONTENT %}
         </div>
-
 </body>
 
 <!--

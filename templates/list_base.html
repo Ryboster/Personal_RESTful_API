@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-
+<!-- 
+This is the base template for all list templates.
+-->
 {% block HEAD %}
     <link rel="stylesheet" href="{{ url_for( 'static', filename='css/list_base.css' ) }}">
     <script src="{{ url_for( 'static', filename='js/list_base.js' ) }}"> </script>
@@ -8,6 +10,12 @@
     {% endblock HEAD1 %}
 {% endblock HEAD %}
 
+<!-- This block contains all of the forms used by the template; the whole CRUD. 
+They are quite crude (hehe), and this is perfectly intentional as different endpoints
+may need to send different fields to the server. Each form contains a Jinja2 block
+that is then expanded upon in each individual list form (e.g. projects.html) to
+provide the endpoint-specific fields. 
+-->
 {% block FORMS %}
     <div id="addFormContainer" class="addFormContainer" style="display:none;" onclick="this.style.display = 'none'">
         <form onclick="event.stopPropagation()" id="addForm" class="addForm" method="POST">
@@ -37,6 +45,16 @@
     </div>
 {% endblock FORMS %}
 
+<!-- 
+The content of each list form is structured the same for uniformity's sake.
+The actual content (inside contentContainer) might vary from endpoint to endpoint,
+which is why it is left empty. It is later populated with javascript using data
+from the database.
+The "messageBox" container is used to display request statuses returned from the
+server after POST requests.
+The buttonsBar container contains all of the buttons that are used for CRUD operations
+on the database records.
+-->
 {% block BODY_CONTENT %}
     <div id="contentContainer" class="contentContainer">
     </div>
