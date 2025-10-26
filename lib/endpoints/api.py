@@ -197,6 +197,7 @@ class API_Endpoints(CRUD):
             return response
                 
         def return_status(message: str, status: int):
+            message = "Success" if message == None else message = message
             response = Response(self.jsonificator.jsonify_message(message),
                                 status=status,
                                 mimetype="application/json",
