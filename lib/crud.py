@@ -43,7 +43,7 @@ class CRUD(Creator):
         
     def open_connection(self):
         self.connection = psycopg2.connect(
-            dbname="RESTful_API_database",
+            dbname="restful_api_database",
             user=USERNAME,
             password=PASSWORD,
             host="localhost",
