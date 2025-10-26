@@ -5,3 +5,4 @@
 venv
 private.key
 fullchain.crt
+db_creds.json

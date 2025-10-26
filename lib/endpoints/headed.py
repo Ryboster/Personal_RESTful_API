@@ -2,7 +2,6 @@ from flask import render_template, send_from_directory, request, redirect, Respo
 import os
 from lib.jsonificator import Jsonificator
 from lib.crud import CRUD
-import shutil
 
 class Headed_Endpoints(CRUD):
     def __init__(self):
@@ -212,7 +211,6 @@ class Headed_Endpoints(CRUD):
             else:
                 if request.form["_method"] == "POST":
                     message = self.create(table="Submissions",
-                                          db="co2submissions.sqlite3",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form['Source'],
                                                   request.form['Fact'],
@@ -222,7 +220,6 @@ class Headed_Endpoints(CRUD):
                 
                 elif request.form["_method"] == "PUT":
                     message = self.update(table="Submissions",
-                                          db="co2submissions.sqlite3",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form["Source"], 
                                                   request.form["Fact"], 
@@ -234,7 +231,6 @@ class Headed_Endpoints(CRUD):
                 
                 elif request.form["_method"] == "DELETE":
                     message = self.delete(table="Submissions",
-                                          db="co2submissions.sqlite3",
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))

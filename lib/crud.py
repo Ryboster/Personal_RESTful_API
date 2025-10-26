@@ -1,8 +1,9 @@
-import sqlite3
+import psycopg2
 import os
 from lib.databases.CreationQueries import Creator
 import re
 import hashlib
+import json
 
 ###
 ### This class is responsible for all operations done on databases.
@@ -11,14 +12,21 @@ import hashlib
 ### but also methods for targetted retrieval and transformation.
 ### It is used exclusively by the Router class.
 ### 
-DATABASE_DIR = "databases"
-DB_FILENAME = "db.sqlite3"
+
+USERNAME = ""
+PASSWORD = ""
+
+if os.path.exists(os.path.join(os.getcwd(), "db_creds.json")):
+    with open (os.path.join(os.getcwd(), "db_creds.json"), "r") as file:
+        creds = json.loads(file.read())
+        USERNAME = creds["USERNAME"]
+        PASSWORD = creds["PASSWORD"]
+else:
+    print("db_creds.json not found. Exitting ...")
+    exit(1)
 
 class CRUD(Creator):    
     def __init__(self):
-        self.DATABASE_DIR = DATABASE_DIR
-        self.DB_FILENAME = DB_FILENAME
-
         super().__init__()
         self.initialize_databases()
         
@@ -30,23 +38,25 @@ class CRUD(Creator):
         self.cursor.execute(self.create_users_table)
         self.cursor.execute(self.create_collaborations_table)
         self.cursor.execute(self.create_collaborators_table)
-        self.close_connection()
-        self.open_connection(db="co2submissions.sqlite3")
         self.cursor.execute(self.create_co2eq_submissions)
         self.close_connection()
         
-    def open_connection(self, db=DB_FILENAME):
-        path = os.path.join(os.getcwd(), "lib", DATABASE_DIR, db)
-        self.connection = sqlite3.connect(path)
-        self.connection.execute('PRAGMA foreign_keys = ON')
+    def open_connection(self):
+        self.connection = psycopg2.connect(
+            dbname="db",
+            user=USERNAME,
+            password=PASSWORD,
+            host="localhost",
+            port=5432
+        )
         self.cursor = self.connection.cursor()
         
     def close_connection(self):
         self.connection.commit()
         self.connection.close()
         
-    def create(self, table: str, values=(), columns=(), db=DB_FILENAME):
-        self.open_connection(db=db)
+    def create(self, table: str, values=(), columns=()):
+        self.open_connection()
         if columns == ():
             secureQuery = f"INSERT INTO {table} VALUES ({self.get_values_placeholder(values)})"
         else:
@@ -59,7 +69,7 @@ class CRUD(Creator):
             return e
         
     
-    def read(self, table: str, selection="*", where_column=None, where_value=None, and_column="", and_value="", db=DB_FILENAME):
+    def read(self, table: str, selection="*", where_column=None, where_value=None, and_column="", and_value=""):
         def is_safe_identifier(name):
             return bool(re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', name))
         if not is_safe_identifier(table):
@@ -68,16 +78,16 @@ class CRUD(Creator):
             raise ValueError(f"Invalid selection columns: {selection}")
         if where_column is not None and not is_safe_identifier(where_column):
             raise ValueError(f"Invalid WHERE column: {where_column}")
-        self.open_connection(db=db)
+        self.open_connection()
         try:
             if where_column is None:
                 query = f"SELECT {selection} FROM {table}"
                 self.cursor.execute(query)
             elif where_column != None and not and_column:
-                query = f"SELECT {selection} FROM {table} WHERE {where_column} = ?"
+                query = f"SELECT {selection} FROM {table} WHERE {where_column} = %s"
                 self.cursor.execute(query, (where_value,))
             else:
-                query = f"SELECT {selection} FROM {table} WHERE {where_column} = ? AND {and_column} = ?"
+                query = f"SELECT {selection} FROM {table} WHERE {where_column} = %s AND {and_column} = %s"
                 self.cursor.execute(query, (where_value, and_value))
         except Exception as e:
             return e
@@ -86,10 +96,10 @@ class CRUD(Creator):
         self.close_connection()
         return result
     
-    def update(self, table: str, columns, where_column: str, where_value, values, db=DB_FILENAME):
-        self.open_connection(db=db)
-        set_clause = ", ".join([f"{col} = ?" for col in columns])
-        query = f"UPDATE {table} SET {set_clause} WHERE {where_column} = ?"
+    def update(self, table: str, columns, where_column: str, where_value, values):
+        self.open_connection()
+        set_clause = ", ".join([f"{col} = %s" for col in columns])
+        query = f"UPDATE {table} SET {set_clause} WHERE {where_column} = %s"
         
         if isinstance(values, tuple):
             values = list(values)
@@ -100,19 +110,19 @@ class CRUD(Creator):
         self.cursor.execute(query, parameters)
         self.close_connection()
 
-    def delete(self, table: str, where_column: str, where_value, and_column="", and_value="", db=DB_FILENAME):
-        self.open_connection(db=db)
+    def delete(self, table: str, where_column: str, where_value, and_column="", and_value=""):
+        self.open_connection()
         if not and_column:
-            query = f"DELETE FROM {table} WHERE {where_column} = ?"
+            query = f"DELETE FROM {table} WHERE {where_column} = %s"
             self.cursor.execute(query, (where_value,))
         else:
-            query = f"DELETE FROM {table} WHERE {where_column} = ? AND {where_column} = ?"
+            query = f"DELETE FROM {table} WHERE {where_column} = %s AND {where_column} = %s"
             self.cursor.execute(query, (where_value, and_value,))
         self.close_connection()
         
-    def get_values_placeholder(self, values, placeholder="?"):
+    def get_values_placeholder(self, values, placeholder="%s"):
         for i in range(0, len(values) - 1):
-            placeholder += ",?"
+            placeholder += ",%s"
         return placeholder
         
     def get_all_projects(self):

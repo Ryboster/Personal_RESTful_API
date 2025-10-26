@@ -178,7 +178,6 @@ class API_Endpoints(CRUD):
                         return return_status("missing fields", 400)
 
                     message = self.create(table="Submissions",
-                                          db="co2submissions.sqlite3",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(data.get('Source'),
                                                   data.get('Fact'),
@@ -191,13 +190,14 @@ class API_Endpoints(CRUD):
                 
         def return_dict(data: dict, status: int):
             response = Response(self.jsonificator.convert_dict_to_json(data),
-                                status=201,
+                                status=status,
                                 mimetype="application/json",
                                 headers={"Cache-Control": "no-cache, no-cache"})
             return response
                 
         def return_status(message: str, status: int):
-            message = "Success" if message == None else message = message
+            
+            message = "Success" if message is None else message
             response = Response(self.jsonificator.jsonify_message(message),
                                 status=status,
                                 mimetype="application/json",
