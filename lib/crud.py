@@ -127,7 +127,7 @@ class CRUD(Creator):
         
     def get_all_projects(self):
         all_projects = {}
-        for record in self.read("Projects"):    
+        for record in self.read(table="Projects"):    
             all_projects[record[0]] = {}
             all_projects[record[0]]["project_ID"] = record[0]
             all_projects[record[0]]['project_name'] = record[1]
@@ -137,7 +137,7 @@ class CRUD(Creator):
     
     def get_all_feedbacks(self):
         all_feedbacks = {}
-        for record in self.read("Feedbacks"):
+        for record in self.read(table="Feedbacks"):
             all_feedbacks[record[0]] = {}
             all_feedbacks[record[0]]["feedback_ID"] = record[0]
             all_feedbacks[record[0]]["author"] = record[1]
@@ -146,7 +146,7 @@ class CRUD(Creator):
     
     def get_all_collaborations(self):
         all_collaborations = {}
-        for record in self.read("Collaborations"):
+        for record in self.read(table="Collaborations"):
             all_collaborations[record[0]] = {}
             all_collaborations[record[0]]["Name"] = record[1]
             all_collaborations[record[0]]["Description"] = record[2]
@@ -155,7 +155,7 @@ class CRUD(Creator):
     
     def get_all_collaborators(self):
         all_collaborators = {}
-        for record in self.read("Collaborators"):
+        for record in self.read(table="Collaborators"):
             all_collaborators[record[0]] = {}
             all_collaborators[record[0]]["Name"] = record[1]
             all_collaborators[record[0]]["Role"] = record[2]
@@ -164,7 +164,7 @@ class CRUD(Creator):
     
     def get_all_co2_submissions(self):
         submissions = {}
-        for record in self.read(table="Submissions", db="co2submissions.sqlite3"):
+        for record in self.read(table="Submissions"):
             submissions[record[0]] = {}
             submissions[record[0]]["Source"] = record[1]
             submissions[record[0]]["Fact"] = record[2]
