@@ -13,16 +13,11 @@ import json
 ### It is used exclusively by the Router class.
 ### 
 
-USERNAME = ""
-PASSWORD = ""
-
-if os.path.exists(os.path.join(os.getcwd(), "db_creds.json")):
-    with open (os.path.join(os.getcwd(), "db_creds.json"), "r") as file:
-        creds = json.loads(file.read())
-        USERNAME = creds["USERNAME"]
-        PASSWORD = creds["PASSWORD"]
-else:
-    print("db_creds.json not found. Exitting ...")
+try:
+    USERNAME = os.environ['DB_USERNAME']
+    PASSWORD = os.environ['DB_PASSWORD']
+except Exception as e:
+    print("db credentials not found. Exitting ...")
     exit(1)
 
 class CRUD(Creator):    

@@ -1,3 +1,6 @@
+/lib/__pycache__/
+/lib/databases/__pycache__/
+/lib/endpoints/__pycache__/
 /lib/databases/*.sqlite3
 /media/json/*.json
 /cert
