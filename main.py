@@ -1,22 +1,16 @@
 from flask import Flask
 import os
 from lib.router import Router
-from sys import argv
 
 ###
 ### This script is responsible for launching the application.
 ### It takes 2 optional positional arguments; PORT and HOST.
 ### PORT must be entered as whole number.
 ### HOST must be wrapped in quotaion marks ("").
-### If no arguments are provided, the script will default to 0.0.0.0:443
 ### 
-
-try:
-    PORT = argv[1]
-    HOST = argv[2]  
-except IndexError:
-    PORT = 443
-    HOST = "0.0.0.0"
+ 
+PORT = 8000
+HOST = "127.0.0.1"
 
 class DevPortfolio:
     def __init__(self):
