@@ -9,7 +9,7 @@ from lib.router import Router
 ### HOST must be wrapped in quotaion marks ("").
 ### 
  
-PORT = 8000
+PORT = 8001
 HOST = "127.0.0.1"
 
 class DevPortfolio:
@@ -17,7 +17,7 @@ class DevPortfolio:
         self.app = Flask("Developer Portfolio", static_folder="static")
         self.app.debug = False
         self.app.config['MEDIA_FOLDER'] = os.path.join(os.getcwd(), "media")        
-        
+
 dev_portfolio = DevPortfolio()
 Router(dev_portfolio.app)
 

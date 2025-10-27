@@ -13,13 +13,6 @@ import json
 ### It is used exclusively by the Router class.
 ### 
 
-try:
-    USERNAME = os.environ['DB_USERNAME']
-    PASSWORD = os.environ['DB_PASSWORD']
-except Exception as e:
-    print("db credentials not found. Exitting ...")
-    exit(1)
-
 class CRUD(Creator):    
     def __init__(self):
         super().__init__()
@@ -38,10 +31,10 @@ class CRUD(Creator):
         
     def open_connection(self):
         self.connection = psycopg2.connect(
-            dbname="restful_api_database",
-            user=USERNAME,
-            password=PASSWORD,
-            host="localhost",
+            dbname=os.getenv('DB_NAME'),
+            user=os.getenv('DB_USERNAME'),
+            password=os.getenv('DB_PASSWORD'),
+            host=os.getenv("DB_HOST"),
             port=5432
         )
         self.cursor = self.connection.cursor()
