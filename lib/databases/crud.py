@@ -1,6 +1,6 @@
-import psycopg2
 import os
-from lib.databases.Creator import Creator
+from lib.databases.creator import Creator
+from lib.databases.connector import Connector
 import re
 import hashlib
 
@@ -16,25 +16,7 @@ import hashlib
 ### DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST
 ###
 
-
-class CRUD(Creator):
-    def __init__(self):
-        super().__init__()
-        
-    def open_connection(self):
-        self.connection = psycopg2.connect(
-            dbname=     os.getenv('DB_NAME', "example"),
-            user=       os.getenv('DB_USERNAME', "guest"),
-            password=   os.getenv('DB_PASSWORD', "123"),
-            host=       os.getenv("DB_HOST", "localhost"),
-            port=       5432
-        )
-        self.cursor = self.connection.cursor()
-        
-    def close_connection(self):
-        self.connection.commit()
-        self.connection.close()
-        
+class CRUD(Connector):
     def initialize_databases(self, table: str, values=(), columns=()):
         self.open_connection()
         if columns == ():
@@ -47,7 +29,6 @@ class CRUD(Creator):
             self.close_connection()  
         except Exception as e:
             return e
-        
     
     def read(self, table: str, selection="*", where_column=None, where_value=None, and_column="", and_value=""):
         def is_safe_identifier(name):

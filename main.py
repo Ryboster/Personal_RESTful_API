@@ -1,6 +1,7 @@
 from flask import Flask
 import os
 from lib.router import Router
+from lib.databases.creator import Creator
 
 ###
 ### This script is responsible for launching the application.
@@ -11,10 +12,11 @@ HOST = "127.0.0.1"
 DEBUG = False
 PROJECT_NAME = "Developer Portfolio"
 
-class DevPortfolio:
+class DevPortfolio(Creator):
     def __init__(self):
-        self.app.debug = DEBUG
+        super().__init__()
         self.app = Flask(PROJECT_NAME, static_folder="static")
+        self.app.debug = DEBUG
         self.app.config['MEDIA_FOLDER'] = os.path.join(os.getcwd(), "media")        
 
 dev_portfolio = DevPortfolio()
