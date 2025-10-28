@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS Feedbacks
+(
+    Feedback_ID SERIAL PRIMARY KEY NOT NULL,
+    Author TEXT NOT NULL,
+    Feedback TEXT NOT NULL 
+)

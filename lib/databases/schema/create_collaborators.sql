@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS Collaborators
+(   
+    Collaborator_ID SERIAL PRIMARY KEY NOT NULL,
+    Name TEXT UNIQUE NOT NULL,
+    Role TEXT UNIQUE NOT NULL,
+    Social_URL TEXT
+)

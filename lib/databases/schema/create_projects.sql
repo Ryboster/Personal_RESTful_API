@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS Projects
+(
+    Project_ID SERIAL PRIMARY KEY NOT NULL,
+    Name TEXT NOT NULL,
+    Description TEXT NOT NULL,
+    Content TEXT
+)

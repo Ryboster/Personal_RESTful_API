@@ -4,26 +4,23 @@ from lib.router import Router
 
 ###
 ### This script is responsible for launching the application.
-### It takes 2 optional positional arguments; PORT and HOST.
-### PORT must be entered as whole number.
-### HOST must be wrapped in quotaion marks ("").
 ### 
  
 PORT = 8001
 HOST = "127.0.0.1"
+DEBUG = False
+PROJECT_NAME = "Developer Portfolio"
 
 class DevPortfolio:
     def __init__(self):
-        self.app = Flask("Developer Portfolio", static_folder="static")
-        self.app.debug = False
+        self.app.debug = DEBUG
+        self.app = Flask(PROJECT_NAME, static_folder="static")
         self.app.config['MEDIA_FOLDER'] = os.path.join(os.getcwd(), "media")        
 
 dev_portfolio = DevPortfolio()
 Router(dev_portfolio.app)
 
-if os.path.exists("fullchain.crt") and os.path.exists("private.key"):
-    dev_portfolio.app.run(ssl_context=("fullchain.crt", "private.key"), host=HOST, port=PORT)
-else:
+if __name__ == "__main__":
     dev_portfolio.app.run(host=HOST, port=PORT)
     
 ### Gracjan Blazejowski,

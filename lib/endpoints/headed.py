@@ -1,7 +1,7 @@
 from flask import render_template, send_from_directory, request, redirect, Response, url_for
 import os
 from lib.jsonificator import Jsonificator
-from lib.crud import CRUD
+from lib.databases.crud import CRUD
 
 class Headed_Endpoints(CRUD):
     def __init__(self):
@@ -53,7 +53,7 @@ class Headed_Endpoints(CRUD):
                     return redirect(url_for("projects", project_ID=project_ID))
                 
                 if request.form["_method"] == "POST":
-                    message = self.create("Projects",
+                    message = self.initialize_databases("Projects",
                                           values=(request.form["Name"] ,request.form["Description"]),
                                           columns=("name","description"))
                     return redirect(url_for("projects", message=message))
@@ -81,7 +81,7 @@ class Headed_Endpoints(CRUD):
                 return render_template("feedback.html", all_feedbacks=feedbacks, message=message)
             else:
                 if request.form["_method"] == "POST":
-                    message=self.create("Feedbacks", 
+                    message=self.initialize_databases("Feedbacks", 
                                         values=(request.form["Author"],
                                                 request.form["Feedback"]),
                                         columns=("Author",
@@ -99,7 +99,7 @@ class Headed_Endpoints(CRUD):
             if request.method == "GET":
                 return render_template("register.html")
             elif request.method == "POST":
-                self.create("Users",
+                self.initialize_databases("Users",
                             (request.form["Username"], request.form["Email"], request.form["Password"], 1),
                             ("Username", "Email", "Password", "isAdmin"))
                 
@@ -155,7 +155,7 @@ class Headed_Endpoints(CRUD):
                 
                 if request.form["_method"] == "POST":
                     if collaboration_ID == None:
-                        message = self.create(table="Collaborations",
+                        message = self.initialize_databases(table="Collaborations",
                                               values=(request.form["Name"],request.form["Description"]),
                                               columns=("Name","Description"))
                         return redirect(url_for("collaborations",message=message))
@@ -185,7 +185,7 @@ class Headed_Endpoints(CRUD):
                 
             else:
                 if request.form["_method"] == "POST":
-                    message = self.create(table="Collaborators",
+                    message = self.initialize_databases(table="Collaborators",
                                           values=(request.form["Name"],request.form["Role"],request.form["Social"]),
                                           columns=("Name", "Role", "Social_URL"))
                     return redirect(url_for("collaborators", message=message))
@@ -210,7 +210,7 @@ class Headed_Endpoints(CRUD):
                 return render_template("co2_fact_submissions.html", submissions=submissions, message=message)
             else:
                 if request.form["_method"] == "POST":
-                    message = self.create(table="Submissions",
+                    message = self.initialize_databases(table="Submissions",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form['Source'],
                                                   request.form['Fact'],

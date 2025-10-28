@@ -1,7 +1,7 @@
 from flask import render_template, send_from_directory, request, redirect, url_for
 import os
 from lib.jsonificator import Jsonificator
-from lib.crud import CRUD
+from lib.databases.crud import CRUD
 from werkzeug.wrappers import Response
 
 class API_Endpoints(CRUD):
@@ -69,7 +69,7 @@ class API_Endpoints(CRUD):
                 project_name = data.get("ProjectName")
                 description = data.get("ProjectDescription")
                 try:
-                    message = self.create("Projects",
+                    message = self.initialize_databases("Projects",
                                           values=(project_name,description),
                                           columns=("name", "description"))
                     return return_status(message=message, status="201") 
@@ -121,7 +121,7 @@ class API_Endpoints(CRUD):
                 if not data or not "Author" in data or not "Feedback" in data:
                     return return_status(message="missing fields", status=400)
                 try:
-                    message = self.create( "Feedbacks", 
+                    message = self.initialize_databases( "Feedbacks", 
                                           values=(data.get("Author"),
                                                   data.get("Feedback")),
                                           columns=("Author",
@@ -177,7 +177,7 @@ class API_Endpoints(CRUD):
                         or not "Co2Unit" in data or not "Timespan" in data or not "TimespanUnit" in data):
                         return return_status("missing fields", 400)
 
-                    message = self.create(table="Submissions",
+                    message = self.initialize_databases(table="Submissions",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(data.get('Source'),
                                                   data.get('Fact'),

@@ -1,9 +1,8 @@
 import psycopg2
 import os
-from lib.databases.CreationQueries import Creator
+from lib.databases.Creator import Creator
 import re
 import hashlib
-import json
 
 ###
 ### This class is responsible for all operations done on databases.
@@ -12,30 +11,23 @@ import json
 ### but also methods for targetted retrieval and transformation.
 ### It is used exclusively by the Router class.
 ### 
+### The database used here is PostgreSQL.
+### To access the database, this class expects the following environment variables:
+### DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST
+###
 
-class CRUD(Creator):    
+
+class CRUD(Creator):
     def __init__(self):
         super().__init__()
-        self.initialize_databases()
-        
-    def initialize_databases(self):
-        self.open_connection()
-        self.cursor.execute(self.create_projects_table)
-        self.cursor.execute(self.create_feedbacks_table)
-        self.cursor.execute(self.create_sessions_table)
-        self.cursor.execute(self.create_users_table)
-        self.cursor.execute(self.create_collaborations_table)
-        self.cursor.execute(self.create_collaborators_table)
-        self.cursor.execute(self.create_co2eq_submissions)
-        self.close_connection()
         
     def open_connection(self):
         self.connection = psycopg2.connect(
-            dbname=os.getenv('DB_NAME'),
-            user=os.getenv('DB_USERNAME'),
-            password=os.getenv('DB_PASSWORD'),
-            host=os.getenv("DB_HOST"),
-            port=5432
+            dbname=     os.getenv('DB_NAME', "example"),
+            user=       os.getenv('DB_USERNAME', "guest"),
+            password=   os.getenv('DB_PASSWORD', "123"),
+            host=       os.getenv("DB_HOST", "localhost"),
+            port=       5432
         )
         self.cursor = self.connection.cursor()
         
@@ -43,7 +35,7 @@ class CRUD(Creator):
         self.connection.commit()
         self.connection.close()
         
-    def create(self, table: str, values=(), columns=()):
+    def initialize_databases(self, table: str, values=(), columns=()):
         self.open_connection()
         if columns == ():
             secureQuery = f"INSERT INTO {table} VALUES ({self.get_values_placeholder(values)})"
