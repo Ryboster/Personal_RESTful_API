@@ -1,10 +1,5 @@
-from random_word import RandomWords
-from typing import Tuple
-import random
-import os
 from lib.databases.connector import Connector
 import re
-import hashlib
 
 ###
 ### This class is responsible for all operations done on databases.
@@ -18,11 +13,9 @@ import hashlib
 ### DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST
 ###
 
-
 class CRUD(Connector):
     def __init__(self):
         super().__init__()
-        self.random_words = RandomWords()
         
     def create(self, table: str, values=(), columns=()):
         self.open_connection()
@@ -38,7 +31,6 @@ class CRUD(Connector):
             return e
         
     def read(self, table: str, selection="*", where_column=None, where_value=None, and_column="", and_value=""):
-       
         def is_safe_identifier(name):            
             return bool(re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', name))        
         if not is_safe_identifier(table):
@@ -94,88 +86,6 @@ class CRUD(Connector):
             placeholder += ",%s"
         return placeholder
         
-    def get_all_projects(self):
-        all_projects = {}
-        for record in self.read(table="Projects"):    
-            all_projects[record[0]] = {}
-            all_projects[record[0]]["project_ID"] = record[0]
-            all_projects[record[0]]['project_name'] = record[1]
-            all_projects[record[0]]['project_description'] = record[2]
-            all_projects[record[0]]["Content"] = record[3]
-        return all_projects
-    
-    def get_all_feedbacks(self):
-        all_feedbacks = {}
-        for record in self.read(table="Feedbacks"):
-            all_feedbacks[record[0]] = {}
-            all_feedbacks[record[0]]["feedback_ID"] = record[0]
-            all_feedbacks[record[0]]["author"] = record[1]
-            all_feedbacks[record[0]]["feedback"] = record[2]
-        return all_feedbacks
-    
-    def get_all_collaborations(self):
-        all_collaborations = {}
-        for record in self.read(table="Collaborations"):
-            all_collaborations[record[0]] = {}
-            all_collaborations[record[0]]["Name"] = record[1]
-            all_collaborations[record[0]]["Description"] = record[2]
-            all_collaborations[record[0]]["Content"] = record[3]
-        return all_collaborations
-    
-    def get_all_collaborators(self):
-        all_collaborators = {}
-        for record in self.read(table="Collaborators"):
-            all_collaborators[record[0]] = {}
-            all_collaborators[record[0]]["Name"] = record[1]
-            all_collaborators[record[0]]["Role"] = record[2]
-            all_collaborators[record[0]]["Social_URL"] = record[3]
-        return all_collaborators
-    
-    def get_all_co2_submissions(self):
-        submissions = {}
-        for record in self.read(table="Submissions"):
-            submissions[record[0]] = {}
-            submissions[record[0]]["Source"] = record[1]
-            submissions[record[0]]["Fact"] = record[2]
-            submissions[record[0]]["Co2"] = record[3]
-            submissions[record[0]]["Timespan"] = record[4]
-        return submissions
-    
-    def generateSessionToken(self):
-        randomBytes = os.urandom(32)
-        sha256 = hashlib.sha256(randomBytes)
-        return sha256.hexdigest()
-
-    ### Encrypt the hash root and return it as token.
-    def generateHash(self):
-        hash_root = self.get_hash_root()
-        combinedBytes = hash_root.encode("utf-8")
-        hashedBytes = hashlib.sha256(combinedBytes)
-        return hashedBytes.hexdigest()
-    
-    ### Generate hash root without user signature.
-    ### Signature is stored in session record instead.
-    def get_hash_root(self):
-        hash_root = self.random_words.get_random_word()
-        hash_root[random.randint(0, len(hash_root) - 1)] = random.randint(0,6969)
-        hash_root += random.randint(0,999)
-        return str(hash_root).encode("utf-8")
-    
-    def areCredsValid(self, enteredHash):
-        allUsers = self.read("users", "Users")
-        for username, password, storedHash in allUsers:
-            if (enteredHash == storedHash):
-                return True
-        return False
-    
-    def isSessionValid(self, request):
-        activeSessions = self.read("sessions", "sessions")
-        enteredID = request.COOKIES.get("ID")
-        enteredSessionToken = request.COOKIES.get("SESH_TOKEN")
-        for id, token, time in activeSessions:
-            if id == enteredID and enteredSessionToken == token:
-                return True
-        return False
         
 if __name__ == "__main__":
     CRUD()

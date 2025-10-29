@@ -7,7 +7,7 @@ from lib.databases.creator import Creator
 ### This script is responsible for launching the application.
 ### 
  
-PORT = 8001
+PORT = 8000
 HOST = "127.0.0.1"
 DEBUG = False
 PROJECT_NAME = "Developer Portfolio"
@@ -20,10 +20,11 @@ class DevPortfolio(Creator):
         self.app.config['MEDIA_FOLDER'] = os.path.join(os.getcwd(), "media")        
 
 dev_portfolio = DevPortfolio()
-Router(dev_portfolio.app)
+app = dev_portfolio.app
+Router(app)
 
 if __name__ == "__main__":
-    dev_portfolio.app.run(host=HOST, port=PORT)
+    app.run(host=HOST, port=PORT)
     
 ### Gracjan Blazejowski,
 ### October, 2025.

@@ -1,14 +1,45 @@
 from flask import render_template, send_from_directory, request, redirect, Response, url_for, make_response
+import time
 import os
 from lib.jsonificator import Jsonificator
-from lib.databases.crud import CRUD
+from lib.databases.dao import DAO
+from lib.authenticator import Authenticator
 
-class Headed_Endpoints(CRUD):
+class Headed_Endpoints(DAO):
     def __init__(self):
         super().__init__()
         self.jsonificator = Jsonificator()
+        self.authy = Authenticator()
+        
+        
         
     def register_endpoints(self, app): 
+        
+        @app.before_request
+        def authenticate():
+            public_endpoints = {"login", "co2_fact_submissions", "logout", "register", "feedback", "serve_media", "static"}
+            token = request.cookies.get("token")
+            print(request.endpoint)
+            
+            ### If not logged in, ignore
+            if request.endpoint in public_endpoints:
+                return
+            if token is None and request.method == "GET":
+                return
+            
+            ### If session expired, log out
+            if token is not None and self.authy.is_session_expired(token):
+                return redirect(url_for("logout"))
+            
+            ### If not logged in and posting, log in
+            elif token is None and request.method == "POST":
+                return redirect(url_for("login", message="No permission"))
+            
+            ### If logged in and posting, check privileges
+            if request.method == "POST" and not self.authy.is_user_admin(self.get_session(token=token)["ID"]):
+                return redirect(url_for("logout"))
+
+
         ### /home Endpoint
         @app.route("/", methods=["GET"])
         def index():
@@ -38,19 +69,17 @@ class Headed_Endpoints(CRUD):
                     all_projects = self.get_all_projects()
                     return render_template("projects.html", projects=all_projects, message=message)
                 else:
+                    
                     content = self.read(table="Projects",
                                         selection="Content",
                                         where_column=("Project_ID"),
                                         where_value=project_ID)[0][0]
                     return render_template("item_view.html", content=content)
             else:
-                if project_ID:
-                    self.update(table="Projects",
-                                columns=("Content",),
-                                where_column="Project_ID",
-                                where_value=project_ID,
-                                values=(request.form["Content"],))
-                    return redirect(url_for("projects", project_ID=project_ID))
+                if self.authy.is_session_expired(request.cookies.get("token")):
+                    return redirect(url_for("logout"))
+                if not self.authy.is_user_admin(self.get_session(request.cookies.get("token"))["ID"]):
+                    return redirect(url_for("projects", message="No."))
                 
                 if request.form["_method"] == "POST":
                     message = self.create("Projects",
@@ -72,6 +101,15 @@ class Headed_Endpoints(CRUD):
                                          where_value=request.form["ID"])
                     return redirect(url_for("projects", message=message))
     
+        @app.route("/logout", methods=["GET"])
+        def logout():
+            response = make_response(redirect(url_for("login",message="You are logged out!") ))
+            self.delete(table="Sessions",
+                        where_column="Token",
+                        where_value=request.cookies.get("token"))
+            response.set_cookie("token", '', max_age=0)
+            return response
+        
         ### /feedback Endpoint
         @app.route("/feedback", methods=["GET", "POST"])
         def feedback():
@@ -93,56 +131,50 @@ class Headed_Endpoints(CRUD):
                                           where_value=request.form["ID"])
                     return redirect(url_for("feedback", message=message))
         
+        
+        
         @app.route("/register", methods=["GET", "POST"])
         def register():
             if request.method == "GET":
                 return render_template("register.html")
             elif request.method == "POST":
                 message = self.create("Users",
-                            (request.form["Username"], request.form["Email"], request.form["Password"], 1),
+                            (request.form["Username"], request.form["Email"], request.form["Password"], False),
                             ("Username", "Email", "Password", "isAdmin"))
-                return render_template("register.html", message=message)
-                
-                
+                return render_template("register.html", message=message) 
                 
         @app.route("/login", methods=["GET", "POST"])
         def login():
             if request.method == "GET":
+                print(self.read(table="Sessions",
+                          where_column="Token",
+                          where_value=request.cookies.get("token")))
                 return render_template("login.html")
             
             elif request.method == "POST":
-                
                 _username = request.form["Username"]
                 _password = request.form["Password"]
                 
                 ### Verify that username and password are correct
-                user_record = self.read(table="Users",
-                              where_column="Username",
-                              and_column="Password",
-                              where_value=_username,
-                              and_value=_password
-                              )                
-                print(user_record)
-                #if (_username == user_record["Username"] 
-                #    and _password == user_record):
+                user_record = self.get_user(username=_username, password=_password)
+                if not "ID" in user_record:
+                    return redirect(url_for("login",message="wrong credentials" ) )
                 
-                #if not user_record:
-                #    return render_template("login.html", message="User not found")
-                #else:
-                #
-                #    token = self.generateHash()
-                #    
-                #    
-                #    
-                #    return render_template("login.html")
-        
-        
-        
-        def authenticate_login_request():
-            
-        
-        
-            return True
+                if self.authy.is_user_logged(user_record["ID"]):
+                    self.delete(table="Sessions",
+                                where_column="User_ID",
+                                where_value=user_record["ID"])
+                    
+                token = self.authy.generate_hash()
+                expiry_time = int(time.time()) + self.authy.EXPIRY
+                self.create(table="Sessions",
+                            columns=("User_ID", "Token", "Expiry"),
+                            values=(user_record["ID"], token, expiry_time))
+                
+                response = make_response(redirect(url_for("login",message="Success"))) 
+                response.set_cookie("token", token, max_age=self.authy.EXPIRY)
+                return response
+            return response
         
         ### "Helper" endpoint used for fetching media resources by other endpoints
         @app.route("/serve_media/<path:path>")
@@ -165,7 +197,6 @@ class Headed_Endpoints(CRUD):
                     return render_template("item_view.html", content=content)
             
             elif request.method == "POST":
-                
                 if collaboration_ID != None:
                     print(request.form["Content"])
                     self.update(table="Collaborations",
