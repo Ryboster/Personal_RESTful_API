@@ -1,5 +1,7 @@
+from random_word import RandomWords
+from typing import Tuple
+import random
 import os
-from lib.databases.creator import Creator
 from lib.databases.connector import Connector
 import re
 import hashlib
@@ -16,8 +18,13 @@ import hashlib
 ### DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST
 ###
 
+
 class CRUD(Connector):
-    def initialize_databases(self, table: str, values=(), columns=()):
+    def __init__(self):
+        super().__init__()
+        self.random_words = RandomWords()
+        
+    def create(self, table: str, values=(), columns=()):
         self.open_connection()
         if columns == ():
             secureQuery = f"INSERT INTO {table} VALUES ({self.get_values_placeholder(values)})"
@@ -29,10 +36,11 @@ class CRUD(Connector):
             self.close_connection()  
         except Exception as e:
             return e
-    
+        
     def read(self, table: str, selection="*", where_column=None, where_value=None, and_column="", and_value=""):
-        def is_safe_identifier(name):
-            return bool(re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', name))
+       
+        def is_safe_identifier(name):            
+            return bool(re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', name))        
         if not is_safe_identifier(table):
             raise ValueError(f"Invalid table name: {table}")
         if selection != "*" and not all(is_safe_identifier(s.strip()) for s in selection.split(",")):
@@ -56,7 +64,7 @@ class CRUD(Connector):
         result = self.cursor.fetchall()
         self.close_connection()
         return result
-    
+        
     def update(self, table: str, columns, where_column: str, where_value, values):
         self.open_connection()
         set_clause = ", ".join([f"{col} = %s" for col in columns])
@@ -138,10 +146,20 @@ class CRUD(Connector):
         sha256 = hashlib.sha256(randomBytes)
         return sha256.hexdigest()
 
-    def generateHash(self, username:str, password:str):
-        combinedBytes = str(username + password).encode("utf-8")
+    ### Encrypt the hash root and return it as token.
+    def generateHash(self):
+        hash_root = self.get_hash_root()
+        combinedBytes = hash_root.encode("utf-8")
         hashedBytes = hashlib.sha256(combinedBytes)
         return hashedBytes.hexdigest()
+    
+    ### Generate hash root without user signature.
+    ### Signature is stored in session record instead.
+    def get_hash_root(self):
+        hash_root = self.random_words.get_random_word()
+        hash_root[random.randint(0, len(hash_root) - 1)] = random.randint(0,6969)
+        hash_root += random.randint(0,999)
+        return str(hash_root).encode("utf-8")
     
     def areCredsValid(self, enteredHash):
         allUsers = self.read("users", "Users")

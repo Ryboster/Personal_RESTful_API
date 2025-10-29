@@ -69,7 +69,7 @@ class API_Endpoints(CRUD):
                 project_name = data.get("ProjectName")
                 description = data.get("ProjectDescription")
                 try:
-                    message = self.initialize_databases("Projects",
+                    message = self.create("Projects",
                                           values=(project_name,description),
                                           columns=("name", "description"))
                     return return_status(message=message, status="201") 
@@ -121,7 +121,7 @@ class API_Endpoints(CRUD):
                 if not data or not "Author" in data or not "Feedback" in data:
                     return return_status(message="missing fields", status=400)
                 try:
-                    message = self.initialize_databases( "Feedbacks", 
+                    message = self.create( "Feedbacks", 
                                           values=(data.get("Author"),
                                                   data.get("Feedback")),
                                           columns=("Author",
@@ -177,7 +177,7 @@ class API_Endpoints(CRUD):
                         or not "Co2Unit" in data or not "Timespan" in data or not "TimespanUnit" in data):
                         return return_status("missing fields", 400)
 
-                    message = self.initialize_databases(table="Submissions",
+                    message = self.create(table="Submissions",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(data.get('Source'),
                                                   data.get('Fact'),

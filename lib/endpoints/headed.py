@@ -1,4 +1,4 @@
-from flask import render_template, send_from_directory, request, redirect, Response, url_for
+from flask import render_template, send_from_directory, request, redirect, Response, url_for, make_response
 import os
 from lib.jsonificator import Jsonificator
 from lib.databases.crud import CRUD
@@ -53,7 +53,7 @@ class Headed_Endpoints(CRUD):
                     return redirect(url_for("projects", project_ID=project_ID))
                 
                 if request.form["_method"] == "POST":
-                    message = self.initialize_databases("Projects",
+                    message = self.create("Projects",
                                           values=(request.form["Name"] ,request.form["Description"]),
                                           columns=("name","description"))
                     return redirect(url_for("projects", message=message))
@@ -81,7 +81,7 @@ class Headed_Endpoints(CRUD):
                 return render_template("feedback.html", all_feedbacks=feedbacks, message=message)
             else:
                 if request.form["_method"] == "POST":
-                    message=self.initialize_databases("Feedbacks", 
+                    message=self.create("Feedbacks", 
                                         values=(request.form["Author"],
                                                 request.form["Feedback"]),
                                         columns=("Author",
@@ -92,16 +92,18 @@ class Headed_Endpoints(CRUD):
                                           where_column="Feedback_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("feedback", message=message))
-                
         
         @app.route("/register", methods=["GET", "POST"])
         def register():
             if request.method == "GET":
                 return render_template("register.html")
             elif request.method == "POST":
-                self.initialize_databases("Users",
+                message = self.create("Users",
                             (request.form["Username"], request.form["Email"], request.form["Password"], 1),
                             ("Username", "Email", "Password", "isAdmin"))
+                return render_template("register.html", message=message)
+                
+                
                 
         @app.route("/login", methods=["GET", "POST"])
         def login():
@@ -109,18 +111,38 @@ class Headed_Endpoints(CRUD):
                 return render_template("login.html")
             
             elif request.method == "POST":
-                print(self.read("Users"))
+                
+                _username = request.form["Username"]
+                _password = request.form["Password"]
+                
+                ### Verify that username and password are correct
                 user_record = self.read(table="Users",
                               where_column="Username",
                               and_column="Password",
-                              where_value=request.form["Username"],
-                              and_value=request.form["Password"]
-                              )
-                if not user_record:
-                    return render_template("login.html", message="User not found")
-                else:
-                    return render_template("login.html")
+                              where_value=_username,
+                              and_value=_password
+                              )                
+                print(user_record)
+                #if (_username == user_record["Username"] 
+                #    and _password == user_record):
                 
+                #if not user_record:
+                #    return render_template("login.html", message="User not found")
+                #else:
+                #
+                #    token = self.generateHash()
+                #    
+                #    
+                #    
+                #    return render_template("login.html")
+        
+        
+        
+        def authenticate_login_request():
+            
+        
+        
+            return True
         
         ### "Helper" endpoint used for fetching media resources by other endpoints
         @app.route("/serve_media/<path:path>")
@@ -155,12 +177,10 @@ class Headed_Endpoints(CRUD):
                 
                 if request.form["_method"] == "POST":
                     if collaboration_ID == None:
-                        message = self.initialize_databases(table="Collaborations",
+                        message = self.create(table="Collaborations",
                                               values=(request.form["Name"],request.form["Description"]),
                                               columns=("Name","Description"))
                         return redirect(url_for("collaborations",message=message))
-
-                        
                 
                 elif request.form['_method'] == "PUT":
                     message = self.update(table="Collaborations",
@@ -185,7 +205,7 @@ class Headed_Endpoints(CRUD):
                 
             else:
                 if request.form["_method"] == "POST":
-                    message = self.initialize_databases(table="Collaborators",
+                    message = self.create(table="Collaborators",
                                           values=(request.form["Name"],request.form["Role"],request.form["Social"]),
                                           columns=("Name", "Role", "Social_URL"))
                     return redirect(url_for("collaborators", message=message))
@@ -210,7 +230,7 @@ class Headed_Endpoints(CRUD):
                 return render_template("co2_fact_submissions.html", submissions=submissions, message=message)
             else:
                 if request.form["_method"] == "POST":
-                    message = self.initialize_databases(table="Submissions",
+                    message = self.create(table="Submissions",
                                           columns=("Source", "Fact", "Co2", "Timespan"),
                                           values=(request.form['Source'],
                                                   request.form['Fact'],
