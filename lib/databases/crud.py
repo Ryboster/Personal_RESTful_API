@@ -116,6 +116,18 @@ class CRUD(Connector):
             f'-c "DROP DATABASE IF EXISTS {os.getenv("DB_NAME", "example")};"'
         )
         output = subprocess.run(drop_cmd, shell=True, capture_output=True, text=True, env=os.environ)
+        print(output)
+        
+        grant_privs_cmd = (
+            f'psql -U postgres '
+            f'-h {os.getenv("DB_HOST", "localhost")} '
+            f'-p 5432 '
+            f'-d postgres '
+            f'-c "GRANT ALL PRIVILEGES ON DATABASE {os.get_env("DB_NAME")} TO {os.get_env("DB_USERNAME")};"'
+        )
+        output = subprocess.run(grant_privs_cmd, shell=True, capture_output=True, text=True, env=os.environ)
+        print(output)
+        
         create_cmd = (
             f'psql -U postgres '
             f'-h {os.getenv("DB_HOST", "localhost")} '
@@ -123,7 +135,8 @@ class CRUD(Connector):
             f'-d postgres '
             f'-c "CREATE DATABASE {os.getenv("DB_NAME", "example")};"'
         )
-        output = subprocess.run(create_cmd, shell=True, capture_output=True, text=True, env=os.environ)        
+        output = subprocess.run(create_cmd, shell=True, capture_output=True, text=True, env=os.environ)     
+        print(output)   
         os.environ["PGPASSWORD"] = os.getenv("DB_PASSWORD", "123")
         command = (
             f'psql -U {os.getenv("DB_USERNAME", "guest")} '
