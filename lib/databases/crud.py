@@ -107,52 +107,48 @@ class CRUD(Connector):
     def rollback_database(self, filename):
         self.open_connection()
         self.close_connection()
+    
         os.environ["PGPASSWORD"] = os.getenv("DB_ADMIN_PASSWORD", "123")
-        drop_cmd = (
-            f'psql -U postgres '
-            f'-h {os.getenv("DB_HOST", "localhost")} '
-            f'-p 5432 '
-            f'-d postgres '
-            f'-c "DROP DATABASE IF EXISTS {os.getenv("DB_NAME", "example")};"'
+        db_name = os.getenv("DB_NAME", "example")
+        db_user = os.getenv("DB_USERNAME", "guest")
+        db_pass = os.getenv("DB_PASSWORD", "123")
+        db_host = os.getenv("DB_HOST", "localhost")
+    
+        # 1. Drop database
+        drop_db_cmd = f'psql -U postgres -h {db_host} -p 5432 -d postgres -c "DROP DATABASE IF EXISTS {db_name};"'
+        subprocess.run(drop_db_cmd, shell=True, check=True, text=True, env=os.environ)
+    
+        # 2. Drop role if exists
+        drop_role_cmd = f'psql -U postgres -h {db_host} -p 5432 -d postgres -c "DROP ROLE IF EXISTS {db_user};"'
+        subprocess.run(drop_role_cmd, shell=True, check=True, text=True, env=os.environ)
+    
+        # 3. Create role
+        create_role_cmd = (
+            f'psql -U postgres -h {db_host} -p 5432 -d postgres -c '
+            f'"CREATE ROLE {db_user} WITH PASSWORD \'{db_pass}\' LOGIN CREATEDB;"'
         )
-        output = subprocess.run(drop_cmd, shell=True, capture_output=True, text=True, env=os.environ)
-        print(output)
-        
-        grant_privs_cmd = (
-            f'psql -U postgres '
-            f'-h {os.getenv("DB_HOST", "localhost")} '
-            f'-p 5432 '
-            f'-d postgres '
-            f'-c "'
-            f'CREATE ROLE {os.getenv("DB_USERNAME")} WITH PASSWORD \'{os.getenv("DB_PASSWORD")}\'; '
-            f'ALTER ROLE {os.getenv("DB_USERNAME")} WITH LOGIN CREATEDB; '
-            f'GRANT ALL PRIVILEGES ON DATABASE {os.getenv("DB_NAME")} TO {os.getenv("DB_USERNAME")}; '
-            f'GRANT ALL ON SCHEMA public TO {os.getenv("DB_USERNAME")}; '
-            f'ALTER SCHEMA public OWNER TO {os.getenv("DB_USERNAME")};'
-            f'"'
+        subprocess.run(create_role_cmd, shell=True, check=True, text=True, env=os.environ)
+    
+        # 4. Create database
+        create_db_cmd = f'psql -U postgres -h {db_host} -p 5432 -d postgres -c "CREATE DATABASE {db_name};"'
+        subprocess.run(create_db_cmd, shell=True, check=True, text=True, env=os.environ)
+    
+        # 5. Grant privileges on database
+        grant_cmd = (
+            f'psql -U postgres -h {db_host} -p 5432 -d {db_name} -c '
+            f'"GRANT ALL PRIVILEGES ON DATABASE {db_name} TO {db_user}; '
+            f'GRANT ALL ON SCHEMA public TO {db_user}; '
+            f'ALTER SCHEMA public OWNER TO {db_user};"'
         )
-        output = subprocess.run(grant_privs_cmd, shell=True, capture_output=True, text=True, env=os.environ)
-        print(output)
-        
-        create_cmd = (
-            f'psql -U postgres '
-            f'-h {os.getenv("DB_HOST", "localhost")} '
-            f'-p 5432 '
-            f'-d postgres '
-            f'-c "CREATE DATABASE {os.getenv("DB_NAME", "example")};"'
-        )
-        output = subprocess.run(create_cmd, shell=True, capture_output=True, text=True, env=os.environ)     
-        print(output)   
-        os.environ["PGPASSWORD"] = os.getenv("DB_PASSWORD", "123")
-        command = (
-            f'psql -U {os.getenv("DB_USERNAME", "guest")} '
-            f'-p 5432 '
-            f'-h {os.getenv("DB_HOST", "localhost")} '
-            f'-d {os.getenv("DB_NAME", "example")} '
-            f'< "{os.path.join(self.BACKUP_DIR, filename)}"'
-        )
-        output = subprocess.run(command, shell=True, capture_output=True, text=True, env=os.environ)
+        subprocess.run(grant_cmd, shell=True, check=True, text=True, env=os.environ)
+    
+        # 6. Restore backup
+        os.environ["PGPASSWORD"] = db_pass
+        backup_file = os.path.join(self.BACKUP_DIR, filename)
+        restore_cmd = f'psql -U {db_user} -h {db_host} -p 5432 -d {db_name} -f "{backup_file}"'
+        output = subprocess.run(restore_cmd, shell=True, capture_output=True, text=True, env=os.environ)
         return output
+
         
 if __name__ == "__main__":
     CRUD()
