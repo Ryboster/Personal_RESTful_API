@@ -108,7 +108,6 @@ class CRUD(Connector):
         self.open_connection()
         self.close_connection()
         os.environ["PGPASSWORD"] = os.getenv("DB_ADMIN_PASSWORD", "123")
-        
         drop_cmd = (
             f'psql -U postgres '
             f'-h {os.getenv("DB_HOST", "localhost")} '
@@ -117,7 +116,6 @@ class CRUD(Connector):
             f'-c "DROP DATABASE IF EXISTS {os.getenv("DB_NAME", "example")};"'
         )
         output = subprocess.run(drop_cmd, shell=True, capture_output=True, text=True, env=os.environ)
-        print(output)
         create_cmd = (
             f'psql -U postgres '
             f'-h {os.getenv("DB_HOST", "localhost")} '
@@ -125,9 +123,7 @@ class CRUD(Connector):
             f'-d postgres '
             f'-c "CREATE DATABASE {os.getenv("DB_NAME", "example")};"'
         )
-        output = subprocess.run(create_cmd, shell=True, capture_output=True, text=True, env=os.environ)
-        print(output)
-        
+        output = subprocess.run(create_cmd, shell=True, capture_output=True, text=True, env=os.environ)        
         os.environ["PGPASSWORD"] = os.getenv("DB_PASSWORD", "123")
         command = (
             f'psql -U {os.getenv("DB_USERNAME", "guest")} '
@@ -137,7 +133,6 @@ class CRUD(Connector):
             f'< "{os.path.join(self.BACKUP_DIR, filename)}"'
         )
         output = subprocess.run(command, shell=True, capture_output=True, text=True, env=os.environ)
-        print(output)
         return output
         
 if __name__ == "__main__":
