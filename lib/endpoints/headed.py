@@ -180,8 +180,13 @@ class Headed_Endpoints(DAO):
         @app.route("/serve_backup/<path:filename>", methods=["GET"])
         def serve_backup(filename):
             session = self.get_session(request.cookies.get("token"))
+            if not "ID" in session:
+                return redirect(url_for("backup", message="Insufficient privileges!"))
             if self.authy.is_user_admin(session["ID"]):
                 return send_from_directory(os.path.join(self.BACKUP_DIR), filename)
+            else:
+                return redirect(url_for("backup", message="Insufficient privileges!") )
+                
             
             
         ### "Helper" endpoint used for fetching media resources by other endpoints
