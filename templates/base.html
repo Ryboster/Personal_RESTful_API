@@ -49,6 +49,9 @@ every form, which is 3 columns.
             <button class="navbarButton" onclick="window.location.href='{{url_for('backup')}}'">
                 Backup
             </button>
+            <button id="logButton" class="navbarButton" onclick="window.location.href='{{url_for('login')}}'">
+                Login
+            </button>
             <button id="APIButton" class="APIButton">
                 API
             </button>
@@ -56,9 +59,12 @@ every form, which is 3 columns.
         <div class="content">
             {% block BODY_CONTENT %}
             {% endblock BODY_CONTENT %}
-
         </div>
         <div class="sidebar">
+            <div id="userContainer" class="userContainer">
+                {% block USER_CONTENT %}
+                {% endblock USER_CONTENT %}
+            </div>
             {% block SIDEBAR_CONTENT %}
             {% endblock SIDEBAR_CONTENT %}
         </div>

@@ -114,26 +114,26 @@ class CRUD(Connector):
         db_pass = os.getenv("DB_PASSWORD", "123")
         db_host = os.getenv("DB_HOST", "localhost")
     
-        # 1. Drop database
+        # Drop database
         drop_db_cmd = f'psql -U postgres -h {db_host} -p 5432 -d postgres -c "DROP DATABASE IF EXISTS {db_name};"'
         subprocess.run(drop_db_cmd, shell=True, check=True, text=True, env=os.environ)
     
-        # 2. Drop role if exists
+        # Drop role if exists
         drop_role_cmd = f'psql -U postgres -h {db_host} -p 5432 -d postgres -c "DROP ROLE IF EXISTS {db_user};"'
         subprocess.run(drop_role_cmd, shell=True, check=True, text=True, env=os.environ)
     
-        # 3. Create role
+        # Recreate role
         create_role_cmd = (
             f'psql -U postgres -h {db_host} -p 5432 -d postgres -c '
             f'"CREATE ROLE {db_user} WITH PASSWORD \'{db_pass}\' LOGIN CREATEDB;"'
         )
         subprocess.run(create_role_cmd, shell=True, check=True, text=True, env=os.environ)
     
-        # 4. Create database
+        # Create database
         create_db_cmd = f'psql -U postgres -h {db_host} -p 5432 -d postgres -c "CREATE DATABASE {db_name};"'
         subprocess.run(create_db_cmd, shell=True, check=True, text=True, env=os.environ)
     
-        # 5. Grant privileges on database
+        # Grant privileges on database
         grant_cmd = (
             f'psql -U postgres -h {db_host} -p 5432 -d {db_name} -c '
             f'"GRANT ALL PRIVILEGES ON DATABASE {db_name} TO {db_user}; '

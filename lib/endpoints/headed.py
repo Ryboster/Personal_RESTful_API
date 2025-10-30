@@ -17,7 +17,6 @@ class Headed_Endpoints(DAO):
         def authenticate():
             public_endpoints = {"login", "co2_fact_submissions", "logout", "register", "feedback", "serve_media", "static"}
             token = request.cookies.get("token")
-            print(request.endpoint)
             
             ### If not logged in, ignore
             if request.endpoint in public_endpoints:
@@ -99,14 +98,7 @@ class Headed_Endpoints(DAO):
                                          where_value=request.form["ID"])
                     return redirect(url_for("projects", message=message))
     
-        @app.route("/logout", methods=["GET"])
-        def logout():
-            response = make_response(redirect(url_for("login",message="You are logged out!") ))
-            self.delete(table="Sessions",
-                        where_column="Token",
-                        where_value=request.cookies.get("token"))
-            response.set_cookie("token", '', max_age=0)
-            return response
+        
         
         ### /feedback Endpoint
         @app.route("/feedback", methods=["GET", "POST"])
@@ -171,9 +163,27 @@ class Headed_Endpoints(DAO):
                 
                 response = make_response(redirect(url_for("login",message="Success"))) 
                 response.set_cookie("token", token, max_age=self.authy.EXPIRY)
+                response.set_cookie("username", user_record["username"], max_age=self.authy.EXPIRY)
                 return response
             return response
         
+        @app.route("/logout", methods=["GET"])
+        def logout():
+            response = make_response(redirect(url_for("login",message="You are logged out!") ))
+            self.delete(table="Sessions",
+                        where_column="Token",
+                        where_value=request.cookies.get("token"))
+            response.set_cookie("token", '', max_age=0)
+            response.set_cookie("username", '', max_age=0)
+            return response
+        
+        @app.route("/serve_backup/<path:filename>", methods=["GET"])
+        def serve_backup(filename):
+            session = self.get_session(request.cookies.get("token"))
+            if self.authy.is_user_admin(session["ID"]):
+                return send_from_directory(os.path.join(self.BACKUP_DIR), filename)
+            
+            
         ### "Helper" endpoint used for fetching media resources by other endpoints
         @app.route("/serve_media/<path:path>")
         def serve_media(path):
