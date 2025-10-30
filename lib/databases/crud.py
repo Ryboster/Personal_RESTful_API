@@ -123,7 +123,13 @@ class CRUD(Connector):
             f'-h {os.getenv("DB_HOST", "localhost")} '
             f'-p 5432 '
             f'-d postgres '
-            f'-c "GRANT ALL PRIVILEGES ON DATABASE {os.getenv("DB_NAME")} TO {os.getenv("DB_USERNAME")};"'
+            f'-c "'
+            f'CREATE ROLE {os.getenv("DB_USERNAME")} WITH PASSWORD \'{os.getenv("DB_PASSWORD")}\'; '
+            f'ALTER ROLE {os.getenv("DB_USERNAME")} WITH LOGIN CREATEDB; '
+            f'GRANT ALL PRIVILEGES ON DATABASE {os.getenv("DB_NAME")} TO {os.getenv("DB_USERNAME")}; '
+            f'GRANT ALL ON SCHEMA public TO {os.getenv("DB_USERNAME")}; '
+            f'ALTER SCHEMA public OWNER TO {os.getenv("DB_USERNAME")};'
+            f'"'
         )
         output = subprocess.run(grant_privs_cmd, shell=True, capture_output=True, text=True, env=os.environ)
         print(output)
