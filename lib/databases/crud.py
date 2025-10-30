@@ -1,5 +1,8 @@
 from lib.databases.connector import Connector
 import re
+import subprocess
+import os
+import time
 
 ###
 ### This class is responsible for all operations done on databases.
@@ -16,6 +19,7 @@ import re
 class CRUD(Connector):
     def __init__(self):
         super().__init__()
+        self.BACKUP_DIR = os.path.join(os.getcwd(), "lib", "databases", "backup")
         
     def create(self, table: str, values=(), columns=()):
         self.open_connection()
@@ -85,7 +89,56 @@ class CRUD(Connector):
         for i in range(0, len(values) - 1):
             placeholder += ",%s"
         return placeholder
+
+    def backup_database(self):
+        os.environ["PGPASSWORD"] = os.getenv("DB_PASSWORD", "123")
+        backup_path = os.path.join(self.BACKUP_DIR, f"{os.getenv('DB_NAME', 'example')}_BACKUP_{int(time.time())}.sql")
         
+        command = ["pg_dump",
+                   "-U", f"{os.getenv('DB_USERNAME', 'guest')}",
+                   "-p", "5432",
+                   "-h", f"{os.getenv('DB_HOST', 'localhost')}",
+                   "-d", f"{os.getenv('DB_NAME', 'example')}",
+                   '-f', backup_path]
+        
+        output = subprocess.run(command, capture_output=True, text=True, env=os.environ)
+        return output
+        
+    def rollback_database(self, filename):
+        self.open_connection()
+        self.close_connection()
+        os.environ["PGPASSWORD"] = os.getenv("DB_ADMIN_PASSWORD", "123")
+        
+        drop_cmd = (
+            f'psql -U postgres '
+            f'-h {os.getenv("DB_HOST", "localhost")} '
+            f'-p 5432 '
+            f'-d postgres '
+            f'-c "DROP DATABASE IF EXISTS {os.getenv("DB_NAME", "example")};"'
+        )
+        output = subprocess.run(drop_cmd, shell=True, capture_output=True, text=True, env=os.environ)
+        print(output)
+        create_cmd = (
+            f'psql -U postgres '
+            f'-h {os.getenv("DB_HOST", "localhost")} '
+            f'-p 5432 '
+            f'-d postgres '
+            f'-c "CREATE DATABASE {os.getenv("DB_NAME", "example")};"'
+        )
+        output = subprocess.run(create_cmd, shell=True, capture_output=True, text=True, env=os.environ)
+        print(output)
+        
+        os.environ["PGPASSWORD"] = os.getenv("DB_PASSWORD", "123")
+        command = (
+            f'psql -U {os.getenv("DB_USERNAME", "guest")} '
+            f'-p 5432 '
+            f'-h {os.getenv("DB_HOST", "localhost")} '
+            f'-d {os.getenv("DB_NAME", "example")} '
+            f'< "{os.path.join(self.BACKUP_DIR, filename)}"'
+        )
+        output = subprocess.run(command, shell=True, capture_output=True, text=True, env=os.environ)
+        print(output)
+        return output
         
 if __name__ == "__main__":
     CRUD()

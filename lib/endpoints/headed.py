@@ -11,8 +11,6 @@ class Headed_Endpoints(DAO):
         self.jsonificator = Jsonificator()
         self.authy = Authenticator()
         
-        
-        
     def register_endpoints(self, app): 
         
         @app.before_request
@@ -285,3 +283,19 @@ class Headed_Endpoints(DAO):
                                           where_column="Submission_ID",
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
+                
+        @app.route("/backup", methods=["GET", "POST"])
+        def backup():
+            if request.method == "GET":
+                backup_files = os.listdir(self.BACKUP_DIR)
+                return render_template("backups.html", files=backup_files)
+            else:
+                if request.form["_method"] == "POST":
+                    self.backup_database()
+                    return redirect(url_for("backup", message="Success!"))
+                elif request.form["_method"] == "DELETE":
+                    os.remove(os.path.join(self.BACKUP_DIR, request.form["filename"]))
+                    return redirect(url_for("backup", message="Success!"))
+                elif request.form["_method"] == "ROLLBACK":
+                    message = self.rollback_database(request.form["filename"])
+                    return redirect(url_for("backup", message="Success!"))

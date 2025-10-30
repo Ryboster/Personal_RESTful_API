@@ -43,6 +43,8 @@ provide the endpoint-specific fields.
             <button type="submit"> Submit </button>
         </form>
     </div>
+    {% block CUSTOM_FORMS %}
+    {% endblock CUSTOM_FORMS %}
 {% endblock FORMS %}
 
 <!-- 
@@ -61,7 +63,9 @@ on the database records.
     <div id="messageBox" class="messageBox">
         <p> {{ message }} </p>
     </div>
+    
     <div class="buttonsBar">
+        {% block BUTTONS_BAR %}
         <button class="addEntryButton" id="addEntryButton" onclick="showAddForm()">
             Add
         </button>
@@ -71,5 +75,7 @@ on the database records.
         <button class="deleteEntryButton" id="deleteEntryButton" onclick="showDeleteForm()" disabled>
             Delete
         </button>
+        {% endblock BUTTONS_BAR %}
     </div>
+    
 {% endblock BODY_CONTENT %}

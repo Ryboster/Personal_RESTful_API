@@ -1,0 +1,40 @@
+{% extends 'list_base.html' %}
+{% block HEAD1 %}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/backups.css')}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/backups.js') }}"></script>
+{% endblock HEAD1 %}
+
+
+{% block DELETE_FORM %}
+    <input id="deleteFormFilename" name="filename"> 
+{% endblock DELETE_FORM %}
+
+{% block CUSTOM_FORMS %}
+    <div id="rollbackFormContainer" class="addFormContainer" style="display:none;" onclick="this.style.display = 'none'">
+        <form onclick="event.stopPropagation()" id="rollbackForm" class="addForm" method="POST">
+            <input name="_method" readonly type="hidden" value="ROLLBACK">
+            <input name="filename" id="rollbackFormFilenameInput" readonly>
+            <button type="submit"> Submit </button>
+        </form>
+    </div>
+{% endblock CUSTOM_FORMS %}
+
+
+
+{% block BUTTONS_BAR %}
+    <button class="addEntryButton" id="addEntryButton" onclick="showAddForm()">
+        Create
+    </button>
+    <button class="deleteEntryButton" id="deleteEntryButton" onclick="showDeleteForm()" disabled>
+        Delete
+    </button>
+    <button class="rollbackButton" id="rollbackButton" onclick="populateRollbackForm()">
+        Rollback
+    </button>
+{% endblock BUTTONS_BAR %}
+
+{% block FOOTER %}
+    <script type="text/javascript">
+        populateEntries({{ files|safe }});
+    </script>
+{% endblock FOOTER %}

@@ -26,13 +26,25 @@ function select(element) {
     if (selected) deselect(selected);
     selected = element;
     element.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-    document.getElementById("editEntryButton").disabled = false;
-    document.getElementById("deleteEntryButton").disabled = false;
+    if (document.getElementById('editEntryButton') != null) 
+    {
+        document.getElementById("editEntryButton").disabled = false;
+    }
+    if (document.getElementById("deleteEntryButton") != null)
+    {
+        document.getElementById("deleteEntryButton").disabled = false;
+    }
 }
 
 function deselect(element) {
     selected = null;
     element.style.backgroundColor = "";
-    document.getElementById("editEntryButton").disabled = true;
-    document.getElementById("deleteEntryButton").disabled = true;
+    if (document.getElementById('editEntryButton') != null) 
+    {
+        document.getElementById("editEntryButton").disabled = true;
+    }
+    if (document.getElementById("deleteEntryButton") != null)
+    {
+        document.getElementById("deleteEntryButton").disabled = true;
+    }
 }
