@@ -123,7 +123,7 @@ class CRUD(Connector):
             f'-h {os.getenv("DB_HOST", "localhost")} '
             f'-p 5432 '
             f'-d postgres '
-            f'-c "GRANT ALL PRIVILEGES ON DATABASE {os.get_env("DB_NAME")} TO {os.get_env("DB_USERNAME")};"'
+            f'-c "GRANT ALL PRIVILEGES ON DATABASE {os.getenv("DB_NAME")} TO {os.getenv("DB_USERNAME")};"'
         )
         output = subprocess.run(grant_privs_cmd, shell=True, capture_output=True, text=True, env=os.environ)
         print(output)
