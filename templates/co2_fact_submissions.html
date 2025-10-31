@@ -1,10 +1,8 @@
 {% extends 'list_base.html' %}
 
-
 {% block HEAD1 %}
     <script src="{{url_for('static', filename='js/co2_fact_submissions.js')}}"> </script>
 {% endblock HEAD1 %}
-
 
 {% block ADD_FORM %}
     <label> Source </label>
@@ -77,8 +75,14 @@
 {% endblock DELETE_FORM %}
 
 
+{% block ADDITIONAL_BUTTONS %}
+    <button onclick="window.location.href += '/download'">
+        Download
+    </button>
+{% endblock ADDITIONAL_BUTTONS %}
+
 {% block FOOTER %}
-<script type="text/javascript">
-    populateEntries({{submissions|tojson}})
-</script>
+    <script type="text/javascript">
+        populateEntries({{submissions|tojson}})
+    </script>
 {% endblock FOOTER %}

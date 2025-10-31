@@ -1,17 +1,28 @@
 
 
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, send_from_directory
 from lib.jsonificator import Jsonificator
 from lib.databases.dao import DAO
 from lib.authenticator import Authenticator
 from lib.endpoints.signer import Signer
+import sqlite3
+import os
 
 class Co2_Fact_Subbmissions(DAO, Signer):
     def __init__(self):
         super().__init__()
         self.jsonificator = Jsonificator()
         self.authy = Authenticator()
-        
+        self.query = """
+        CREATE TABLE IF NOT EXISTS Submissions
+        (
+            Submission_ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            Source TEXT UNIQUE NOT NULL,
+            Fact TEXT UNIQUE NOT NULL,
+            Co2 REAL NOT NULL,
+            Timespan INTEGER NOT NULL
+        )
+        """
         
     def register(self, app):
         ###
@@ -49,6 +60,26 @@ class Co2_Fact_Subbmissions(DAO, Signer):
                                           where_value=request.form["ID"])
                     return redirect(url_for("co2_fact_submissions", message=message))
         
+        @app.route("/collaborations/co2_fact_submissions/download", methods=["GET"])
+        def download_co2_fact_submissions():
+            submissions = self.get_all_co2_submissions()
+            filepath = os.path.join(self.BACKUP_DIR, "co2_fact_submissions")
+            filename = "submissions.sqlite3"
+            
+            if os.path.exists(os.path.join(filepath, filename)):
+                os.remove(os.path.join(filepath, filename))
+            conn = sqlite3.connect(os.path.join(filepath, filename))
+            cursor = conn.cursor()
+            cursor.execute(self.query)
+            
+            for record in submissions:
+                cursor.execute(f"""INSERT INTO Submissions(Source, Fact, Co2, Timespan)
+                               VALUES('{submissions[record]['Source']}','{submissions[record]['Fact']}','{submissions[record]['Co2']}','{submissions[record]['Timespan']}')""")
+            
+            conn.commit()
+            conn.close()
+            return send_from_directory(filepath, filename)
+
         ###
         ### API
         @app.route("/api/collaborations/co2_fact_submissions", methods=["GET", "POST", "PUT", "DELETE"])

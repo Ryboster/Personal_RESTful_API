@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, send_from_directory
 from lib.jsonificator import Jsonificator
 from lib.databases.dao import DAO
 from lib.authenticator import Authenticator
@@ -31,3 +31,13 @@ class Backup(DAO, Signer):
                 elif request.form["_method"] == "ROLLBACK":
                     message = self.rollback_database(request.form["filename"])
                     return redirect(url_for("backup", message="Success!"))
+                
+        @app.route("/serve_backup/<path:filename>", methods=["GET"])
+        def serve_backup(filename):
+            session = self.get_session(request.cookies.get("token"))
+            if not "ID" in session:
+                return redirect(url_for("backup", message="Insufficient privileges!"))
+            if self.authy.is_user_admin(session["ID"]):
+                return send_from_directory(os.path.join(self.BACKUP_DIR), filename)
+            else:
+                return redirect(url_for("backup", message="Insufficient privileges!"))
