@@ -18,8 +18,9 @@ class Backup(DAO, Signer):
         @app.route("/backup", methods=["GET", "POST"])
         def backup():
             if request.method == "GET":
+                message = request.args.get("message", "")
                 backup_files = os.listdir(self.BACKUP_DIR)
-                return render_template("backups.html", files=backup_files)
+                return render_template("backups.html", files=backup_files, message=message)
             else:
                 if request.form["_method"] == "POST":
                     self.backup_database()

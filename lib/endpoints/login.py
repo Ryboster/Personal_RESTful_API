@@ -36,6 +36,7 @@ class Login(DAO, Signer):
                 self.create(table="Sessions",
                             columns=("User_ID", "Token", "Expiry"),
                             values=(user_record["ID"], token, expiry_time))
+                
                 response = make_response(redirect(url_for("login",message="Success"))) 
                 response.set_cookie("token", token, max_age=self.authy.EXPIRY)
                 response.set_cookie("username", user_record["username"], max_age=self.authy.EXPIRY)
@@ -43,7 +44,7 @@ class Login(DAO, Signer):
             return response
         @app.route("/logout", methods=["GET"])
         def logout():
-            response = make_response(redirect(url_for("login",message="You are logged out!") ))
+            response = make_response(redirect(url_for("login",message="You have been logged out!") ))
             self.delete(table="Sessions",
                         where_column="Token",
                         where_value=request.cookies.get("token"))
