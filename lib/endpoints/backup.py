@@ -19,7 +19,7 @@ class Backup(DAO, Signer):
         def backup():
             if request.method == "GET":
                 message = request.args.get("message", "")
-                backup_files = os.listdir(self.BACKUP_DIR)
+                backup_files = [x for x in os.listdir(self.BACKUP_DIR) if x.endswith(".sql")]
                 return render_template("backups.html", files=backup_files, message=message)
             else:
                 if request.form["_method"] == "POST":
